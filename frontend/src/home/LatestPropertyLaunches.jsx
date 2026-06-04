@@ -10,7 +10,7 @@ const projects = [
     status: 'New Launch',
     title: 'L And T Crestoria Estate',
     location: 'Panvel, Mumbai',
-    price: '₹1.18 Cr Onwards',
+    price: '₹1.18 Cr Onward',
     priceColor: 'text-orange-500',
     config: '2,3,4 BHK Apartment',
     area: '785 - 1796 sq ft',

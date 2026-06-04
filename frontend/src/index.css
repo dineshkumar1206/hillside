@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  /* This configures the default sans-serif font utility stack to use Sora */
+  --font-sans: "Sora", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: #FFF9E5;
+  font-family: var(--font-sans);
+  margin: 0;
+}
+
+@keyframes fadeInUpSlow {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up-slow {
+  opacity: 0;
+  animation: fadeInUpSlow 1.8s ease-out forwards;
+}
+
+@keyframes zoomInSlow {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomInNormal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-zoom-slow {
+  opacity: 0;
+  animation: zoomInSlow 1.8s ease-out forwards;
+}
+
+.animate-zoom-normal {
+  opacity: 0;
+  animation: zoomInNormal 1s ease-out forwards;
+}
+
+/* --- Preloader Synchronized Animation Delays (Starts after 2.6s) --- */
+
+/* Baseline Delay: Starts the exact millisecond the preloader fully vanishes */
+.delay-preloader-base {
+  animation-delay: 2.6s;
+}
+
+/* Delayed Steps: Adds your staggered offsets (300ms, 500ms, 700ms) on top of the base 2.6s */
+.delay-300 {
+  animation-delay: 2.9s; /* 2.6s base + 0.3s offset */
+}
+
+.delay-500 {
+  animation-delay: 3.1s; /* 2.6s base + 0.5s offset */
+}
+
+.delay-700 {
+  animation-delay: 3.3s; /* 2.6s base + 0.7s offset */
+}

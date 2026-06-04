@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 const projects = [
   {
     id: 1,
-    image: '/images/Hubtown-Seasons-Ecuador-1.jpg',
+    image: '/images/west-county-dosti-oak-elevation-20523610.jpeg',
     status: 'New Launch',
     title: 'L And T Crestoria Estate',
     location: 'Panvel, Mumbai',
@@ -18,7 +18,7 @@ const projects = [
   },
   {
     id: 2,
-    image: '/images/Rustomjee-Crown-Phase-2.jpeg',
+    image: '/images/nextown-coral-images-for-project-36677650.jpeg', 
     status: 'New Launch',
     title: 'Godrej Varanya',
     location: 'Prabhadevi, Mumbai',
@@ -30,7 +30,7 @@ const projects = [
   },
   {
     id: 3,
-    image: '/images/beaumonte-tower-a-elevation-104327837.jpeg',
+    image: '/images/Kalpataru-Magnus.jpeg',
     status: 'Ready to Move',
     title: 'Sheth Beaumonte Tower A',
     location: 'Kharghar, Mumbai',
@@ -54,7 +54,7 @@ const projects = [
   },
   {
     id: 5,
-    image: '/images/nextown-coral-images-for-project-36677650.jpeg',
+    image: '/images/Rustomjee-Crown-Phase-2.jpeg',
     status: 'Under Construction',
     title: 'L&T Malad',
     location: 'Malad East, Mumbai',
@@ -66,7 +66,7 @@ const projects = [
   },
   {
     id: 6,
-    image: '/images/Kalpataru-Magnus.jpeg',
+    image: '/images/beaumonte-tower-a-elevation-104327837.jpeg',
     status: 'Ready to Move',
     title: 'Kalpataru Magnus',
     location: 'Bandra East, Mumbai',

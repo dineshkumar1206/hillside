@@ -59,22 +59,20 @@ body {
   animation: zoomInNormal 1s ease-out forwards;
 }
 
-/* --- Preloader Synchronized Animation Delays (Starts after 2.6s) --- */
+/* --- Preloader Synchronized Animation Delays (Starts after 1.2s) --- */
 
-/* Baseline Delay: Starts the exact millisecond the preloader fully vanishes */
 .delay-preloader-base {
-  animation-delay: 2.6s;
+  animation-delay: 1.2s;
 }
 
-/* Delayed Steps: Adds your staggered offsets (300ms, 500ms, 700ms) on top of the base 2.6s */
 .delay-300 {
-  animation-delay: 2.9s; /* 2.6s base + 0.3s offset */
+  animation-delay: 1.5s; /* 1.2s + 0.3s */
 }
 
 .delay-500 {
-  animation-delay: 3.1s; /* 2.6s base + 0.5s offset */
+  animation-delay: 1.7s; /* 1.2s + 0.5s */
 }
 
 .delay-700 {
-  animation-delay: 3.3s; /* 2.6s base + 0.7s offset */
+  animation-delay: 1.9s; /* 1.2s + 0.7s */
 }

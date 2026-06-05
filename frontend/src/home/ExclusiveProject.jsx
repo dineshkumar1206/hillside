@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // ─── Project Data ─────────────────────────────────────────────────────────────
-// Add more projects here — the carousel handles them automatically
 const projects = [
   {
     id: 1,
@@ -20,6 +20,7 @@ const projects = [
   {
     id: 2,
     name: 'Purva Panorama',
+    route: '/purva-panorama',
     location: 'Thane, Mumbai',
     price: '1.80 Cr Onwards',
     configuration: '2, 3 BHK',
@@ -31,6 +32,7 @@ const projects = [
   {
     id: 3,
     name: 'West County Phase 6 Dosti Maple',
+    route: '/purva-panorama',
     location: 'Thane West',
     price: '1.15 Cr Onwards',
     configuration: '2 BHK',
@@ -102,7 +104,13 @@ function ProjectCard({ project }) {
             Contact Us
           </button>
           <button 
-           onClick={() => navigate(project.route)}
+           onClick={() => {
+                 navigate(project.route);
+                 window.scrollTo({
+                   top: 0,
+                   behavior: "smooth",
+                 });
+               }}
           className="bg-[#1a2c5b] hover:bg-[#162348] text-white font-semibold text-[14px] px-6 py-3 rounded-full cursor-pointer transition-colors duration-200">
             Explore now
           </button>
@@ -110,7 +118,7 @@ function ProjectCard({ project }) {
       </div>
 
       {/* ── Right: Image Panel ── */}
-      <div className="relative flex-1 min-h-[220px] md:min-h-0">
+      <div className="relative flex-1 min-h-[220px] md:min-h-0 overflow-hidden">
         {/* Main image */}
         <img
           src={project.images[0]}
@@ -134,11 +142,31 @@ export default function ExclusiveProjects() {
   const next = () => setCurrent((p) => (p + 1) % projects.length);
 
   return (
-    <section className="w-full bg-gray-50 py-10 md:py-14">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16">
+    <motion.section 
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.25,
+          },
+        },
+      }}
+      className="w-full bg-gray-50 py-10 md:py-14"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 flex flex-col gap-6">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 md:mb-8">
+        <motion.div 
+          variants={{
+            hidden: { opacity: 0, y: 40 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex items-center justify-between"
+        >
           <h2 className="text-[22px] sm:text-[26px] md:text-[30px] font-bold text-gray-900 leading-tight">
             Exclusive Projects
           </h2>
@@ -149,14 +177,39 @@ export default function ExclusiveProjects() {
             View all
             <ChevronRight size={16} strokeWidth={2.5} />
           </a>
-        </div>
+        </motion.div>
 
-        {/* Card */}
-        <ProjectCard key={projects[current].id} project={projects[current]} />
+        {/* Card Frame containing slide setup */}
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 40 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={current}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.35, ease: "easeInOut" }}
+            >
+              <ProjectCard project={projects[current]} />
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
 
         {/* Project navigation dots + arrows */}
         {projects.length > 1 && (
-          <div className="flex items-center justify-center gap-3 mt-6">
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="flex items-center justify-center gap-3 mt-2"
+          >
             <button
               onClick={prev}
               className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-blue-500 hover:text-blue-600 transition-colors bg-white shadow-sm"
@@ -182,10 +235,10 @@ export default function ExclusiveProjects() {
             >
               <ChevronRight size={16} strokeWidth={2.5} />
             </button>
-          </div>
+          </motion.div>
         )}
 
       </div>
-    </section>
+    </motion.section>
   );
 }

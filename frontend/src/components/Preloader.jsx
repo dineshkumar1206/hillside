@@ -294,13 +294,13 @@ export default function Preloader() {
   const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000);
+    const timer = setTimeout(() => setLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     if (!loading) {
-      const t = setTimeout(() => setShouldRender(false), 600);
+      const t = setTimeout(() => setShouldRender(false), 400);
       return () => clearTimeout(t);
     }
   }, [loading]);

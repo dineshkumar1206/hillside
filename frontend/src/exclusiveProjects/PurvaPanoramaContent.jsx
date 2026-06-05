@@ -18,13 +18,13 @@ import {
 } from "lucide-react";
 import ContactForm from "../forms/Contactform";
 
-
 // ── Nav tabs ────────────────────────────────────────────────────────────────
 const NAV_TABS = [
   { label: "Overview", id: "overview" },
   { label: "Floor Plan", id: "floorplan" },
   { label: "Amenities", id: "amenities" },
   { label: "Gallery", id: "gallery" },
+  { label: "Home Loan", id: "homeloan" },
 ];
 
 // ── Floor plan data ─────────────────────────────────────────────────────────
@@ -91,13 +91,34 @@ function FloorPlanIllustration() {
 }
 
 // ── Main component ───────────────────────────────────────────────────────────
-export default function CentreParkContent() {
+export default function PurvaPanoramaContent() {
   const [activeTab, setActiveTab] = useState("overview");
   const [activeBHK, setActiveBHK] = useState("1 BHK");
   const [activePlanIdx, setActivePlanIdx] = useState(0);
   const [activeGalleryTab, setActiveGalleryTab] = useState("Elevation");
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const navRef = useRef(null);
+
+  // ── Loan Calculator State ──
+  const [loanAmount, setLoanAmount] = useState(5000000);
+  const [tenure, setTenure] = useState(5);
+  const [interestRate, setInterestRate] = useState(9);
+
+  // ── Loan Calculator Derived Logic ──
+  const monthlyRate = interestRate / 12 / 100;
+  const months = tenure * 12;
+
+  const emi =
+    (loanAmount *
+      monthlyRate *
+      Math.pow(1 + monthlyRate, months)) /
+    (Math.pow(1 + monthlyRate, months) - 1);
+
+  const totalPayable = emi * months;
+  const totalInterest = totalPayable - loanAmount;
+
+  const principalPercent = (loanAmount / totalPayable) * 100;
+  const interestPercent = (totalInterest / totalPayable) * 100;
 
   // Highlight nav on scroll
   useEffect(() => {
@@ -164,11 +185,11 @@ export default function CentreParkContent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-5 gap-x-4 mb-5">
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide">Possession Start Date</p>
-                  <p className="text-sm font-semibold text-gray-800 mt-1">Nov'19</p>
+                  <p className="text-sm font-semibold text-gray-800 mt-1">Feb'28</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide">Status</p>
-                  <p className="text-sm font-semibold text-green-600 mt-1">Completed</p>
+                  <p className="text-sm font-semibold text-green-600 mt-1">Under Construction</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide">Total Launched Apartments</p>
@@ -211,14 +232,14 @@ export default function CentreParkContent() {
 
               {/* More about */}
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">More about Lodha Centre Park</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">More about PurvaPanorama</h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Central Park project is registered in RERA under new projects as follows—
+                  PurvaPanorama project is registered in RERA under new projects as follows—
                   Palava Eviva K To T, Urbano A, C And F, Urbano I To T P51800006843, Palava Clara J-M
                   P51700000420, Palava Fontana C - H P51700000596, Palava Urbano D And E P51700000577,
                   Palava Clara E - I P51700000540, Palava - Aurelia - D To G P51700000511, Fontana A, B,
                   I And J P51700000506, Palava Clara A To D, D1 P51700000448, Palava Urbano G And H
-                  P51700000696. Central Park is the latest residential project offered by Lodha Group.{" "}
+                  P51700000696. PurvaPanorama is the latest residential project offered by Puravankara Limited.{" "}
                   <a href="#" className="text-blue-500 hover:underline">View more</a>
                 </p>
               </div>
@@ -226,7 +247,7 @@ export default function CentreParkContent() {
 
             {/* ── Floor Plan ────────────────────────────────────────────── */}
             <section id="floorplan" className="bg-white border border-gray-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-5">Lodha Centre Park Floor Plans</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-5">PurvaPanorama Floor Plans</h2>
 
               {/* BHK toggle */}
               <div className="flex gap-2 mb-5 overflow-x-auto scrollbar-none pb-1">
@@ -293,7 +314,7 @@ export default function CentreParkContent() {
 
             {/* ── Amenities ─────────────────────────────────────────────── */}
             <section id="amenities" className="bg-white border border-gray-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-5">Lodha Centre Park Amenities</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-5">PurvaPanorama Amenities</h2>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {visibleAmenities.map(({ icon: Icon, label }) => (
@@ -319,7 +340,7 @@ export default function CentreParkContent() {
 
             {/* ── Gallery ───────────────────────────────────────────────── */}
             <section id="gallery" className="bg-white border border-gray-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Lodha Centre Park Gallery</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">PurvaPanorama Gallery</h2>
 
               {/* Gallery sub-tabs */}
               <div className="flex gap-0 border-b border-gray-200 mb-5 overflow-x-auto">
@@ -354,11 +375,168 @@ export default function CentreParkContent() {
               </div>
             </section>
 
+           {/* ── Home Loan Calculator ─────────────────────────────────── */}
+<section id="homeloan" className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6">
+  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">
+    Home Loan Calculator
+  </h2>
+
+  <div className="grid lg:grid-cols-[1fr_340px] gap-6">
+    {/* Left Controls */}
+    <div className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-600 mb-2">
+          Select a unit
+        </label>
+        <select className="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm text-gray-800 bg-white focus:outline-none focus:border-blue-500">
+          <option>2BHK+2T (716 sq ft) ₹ 1.80 Cr</option>
+          <option>3BHK+3T (950 sq ft) ₹ 2.25 Cr</option>
+        </select>
+      </div>
+
+      {/* Loan Amount Range */}
+      <div>
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-sm font-medium text-gray-600">Loan Amount</h3>
+          <div className="border border-gray-300 rounded-xl px-3 py-1.5 text-base font-semibold text-gray-800 bg-gray-50">
+            ₹ {loanAmount.toLocaleString()}
+          </div>
+        </div>
+        <input
+          type="range"
+          min="1000000"
+          max="10000000"
+          step="100000"
+          value={loanAmount}
+          onChange={(e) => setLoanAmount(Number(e.target.value))}
+          className="w-full accent-yellow-600 cursor-pointer"
+        />
+        <div className="flex justify-between text-xs text-gray-400 mt-1">
+          <span>₹ 10 L</span>
+          <span>₹ 1 Cr</span>
+        </div>
+      </div>
+
+      {/* Tenure Range */}
+      <div>
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-sm font-medium text-gray-600">
+            Loan Tenure <span className="text-gray-400 font-normal">(in years)</span>
+          </h3>
+          <div className="border border-gray-300 rounded-xl px-3 py-1.5 text-base font-semibold text-gray-800 bg-gray-50">
+            {tenure} Y
+          </div>
+        </div>
+        <input
+          type="range"
+          min="5"
+          max="30"
+          value={tenure}
+          onChange={(e) => setTenure(Number(e.target.value))}
+          className="w-full accent-yellow-600 cursor-pointer"
+        />
+        <div className="flex justify-between text-xs text-gray-400 mt-1">
+          <span>5 Y</span>
+          <span>30 Y</span>
+        </div>
+      </div>
+
+      {/* Interest Rate Range */}
+      <div>
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-sm font-medium text-gray-600">
+            Interest Rate <span className="text-gray-400 font-normal">(% P.A.)</span>
+          </h3>
+          <div className="border border-gray-300 rounded-xl px-3 py-1.5 text-base font-semibold text-gray-800 bg-gray-50">
+            {interestRate} %
+          </div>
+        </div>
+        <input
+          type="range"
+          min="7"
+          max="15"
+          step="0.1"
+          value={interestRate}
+          onChange={(e) => setInterestRate(Number(e.target.value))}
+          className="w-full accent-yellow-600 cursor-pointer"
+        />
+        <div className="flex justify-between text-xs text-gray-400 mt-1">
+          <span>7 %</span>
+          <span>15 %</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Right Results Breakdown */}
+    <div className="bg-gray-50 rounded-2xl p-4 sm:p-5 border border-gray-200 flex flex-col justify-between">
+      <div>
+        {/* Donut Chart Visual representation */}
+        <div className="flex justify-center mb-4">
+          <div
+            className="w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center transition-all"
+            style={{
+              background: `conic-gradient(
+                #10b981 0% ${principalPercent}%,
+                #dc2626 ${principalPercent}% 100%
+              )`,
+            }}
+          >
+            <div className="w-20 h-20 sm:w-22 sm:h-22 bg-white rounded-full" />
+          </div>
+        </div>
+
+        <div className="text-center mb-5">
+          <h3 className="text-2xl sm:text-3xl font-bold text-[#0B2354]">
+            ₹ {(emi / 100000).toFixed(2)} L
+          </h3>
+          <p className="text-gray-500 text-xs sm:text-sm mt-0.5">EMI per month</p>
+        </div>
+
+        <div className="space-y-2.5 text-xs sm:text-sm text-gray-700">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2 font-medium">
+              <span className="w-2.5 h-2.5 bg-green-500 rounded-full shrink-0" />
+              Principal Amount
+            </div>
+            <span className="font-semibold text-gray-900">₹ {(loanAmount / 100000).toFixed(2)} L</span>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2 font-medium">
+              <span className="w-2.5 h-2.5 bg-red-600 rounded-full shrink-0" />
+              Interest Amount
+            </div>
+            <span className="font-semibold text-gray-900">₹ {(totalInterest / 100000).toFixed(2)} L</span>
+          </div>
+
+          <div className="flex justify-between items-center font-semibold text-gray-900 border-t border-gray-200 pt-2.5 mt-2">
+            <span>Total amount payable</span>
+            <span>₹ {(totalPayable / 100000).toFixed(2)} L</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        {/* Banner image adjusted for neat display */}
+        <img
+          src="/images/home-loan-banner.jpg"
+          alt=""
+          className="rounded-xl mt-5 mb-4 w-full object-cover max-h-24"
+        />
+
+        <button className="w-full border border-[#0B2354] text-[#0B2354] py-2.5 rounded-xl text-sm font-semibold hover:bg-[#0B2354] hover:text-white transition-all duration-200 active:scale-[0.99]">
+          Apply Home Loan
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
           </div>
 
           {/* ── Right: Sticky Contact Form ─────────────────────────────── */}
           <div className="hidden lg:block w-[300px] shrink-0 sticky top-40 self-start">
-            <ContactForm city="Dombivali" subtitle="Lodha Group Centre Park" />
+            <ContactForm city="Purva Panorama ?" subtitle="Puravankara Limited Purva Panorama" />
           </div>
         </div>
       </div>

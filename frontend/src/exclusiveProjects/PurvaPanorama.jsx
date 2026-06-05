@@ -8,7 +8,7 @@ import {
   Heart,
   Share2,
 } from "lucide-react";
-import CentreParkContent from "./CentreParkContent";
+import PurvaPanoramaContent from "./PurvaPanoramaContent";
 
 // ── Sample image data ──────────────────────────────────────────────────────────
 const CAROUSEL_IMAGES = [
@@ -215,7 +215,7 @@ function Lightbox({ images, startIndex, onClose }) {
 }
 
 // ── Main Component ─────────────────────────────────────────────────────────────
-export default function CentrePark() {
+export default function PurvaPanorama() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [lightbox, setLightbox] = useState(null); // { images, startIndex }
 
@@ -355,7 +355,7 @@ export default function CentrePark() {
               </span>
               <span className="flex items-center gap-1 text-green-600 text-xs font-medium">
                 <CheckCircle2 size={14} className="text-green-500" />
-                Possession : Nov'19
+                Possession : Feb'28
               </span>
               <span className="flex items-center gap-1 text-green-600 text-xs font-medium">
                 <CheckCircle2 size={14} className="text-green-500" />
@@ -366,7 +366,7 @@ export default function CentrePark() {
             {/* Title */}
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-2xl font-bold text-gray-900">
-                Lodha Centre Park
+                PurvaPanorama
               </h1>
               <button className="text-gray-400 hover:text-red-500 transition-colors">
                 <Heart size={20} />
@@ -383,14 +383,14 @@ export default function CentrePark() {
                 href="#"
                 className="text-blue-600 hover:underline font-medium"
               >
-                Lodha Group
+                Puravankara Limited
               </a>
             </p>
 
             {/* Location */}
             <div className="flex items-center gap-1 mt-1 text-sm text-gray-500">
               <MapPin size={14} className="text-gray-400" />
-              <span>Dombivali, Mumbai</span>
+              <span>Thane West, Mumbai</span>
               <a href="#" className="text-blue-500 hover:underline ml-1 text-xs">
                 (show on map)
               </a>
@@ -403,7 +403,7 @@ export default function CentrePark() {
                   <span className="text-gray-300">⊞</span> Configuration
                 </p>
                 <p className="text-sm font-semibold text-gray-800 mt-1">
-                  1, 2, 3 BHK
+                  2, 3 BHK
                 </p>
               </div>
               <div>
@@ -412,7 +412,7 @@ export default function CentrePark() {
                   <span className="text-blue-400 cursor-pointer">ⓘ</span>
                 </p>
                 <p className="text-sm font-semibold text-gray-800 mt-1">
-                  453 – 884 sq ft
+                  716 – 1060 sq ft
                 </p>
               </div>
               <div>
@@ -420,7 +420,7 @@ export default function CentrePark() {
                   <span className="text-gray-300">▤</span> Possession Status
                 </p>
                 <p className="text-sm font-semibold text-gray-800 mt-1">
-                  Completed
+                  Under Construction
                 </p>
               </div>
               <div>
@@ -428,7 +428,7 @@ export default function CentrePark() {
                   <span className="text-gray-300">▤</span> Avg. Price
                 </p>
                 <p className="text-sm font-semibold text-gray-800 mt-1">
-                  ₹ 8,822 sq.ft
+                  ₹ 25,139 sq.ft
                 </p>
               </div>
             </div>
@@ -437,7 +437,7 @@ export default function CentrePark() {
           {/* Right price block */}
           <div className="w-full lg:w-auto text-left lg:text-right shrink-0">
             <p className="text-xl font-bold text-orange-500">
-              ₹ 45.49 L – ₹ 77.99 L
+              ₹ 1.80 Cr - ₹ 2.66 Cr
             </p>
             <div className="flex items-center justify-end gap-2 mt-1">
               <span className="text-xs text-gray-500">Builder Price</span>
@@ -446,7 +446,7 @@ export default function CentrePark() {
               </a>
             </div>
             <p className="text-xs text-gray-400 mt-0.5">
-              Home Loan EMI starts at ₹ 35,268
+              Home Loan EMI starts at ₹ 2.07 L
             </p>
           </div>
         </div>
@@ -463,7 +463,7 @@ export default function CentrePark() {
       
     </div>
 
-    <CentreParkContent/>
+    <PurvaPanoramaContent/>
 
     </>
   );

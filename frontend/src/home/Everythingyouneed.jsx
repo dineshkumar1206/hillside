@@ -5,6 +5,7 @@ import {
   Briefcase, TrendingUp, HandshakeIcon, PiggyBank,
   Building, ClipboardList, Award, BookOpen,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // ─── Tab Data ─────────────────────────────────────────────────────────────────
 const tabs = [
@@ -78,16 +79,42 @@ export default function EverythingYouNeed() {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <section className="w-full bg-white py-10 md:py-14">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16">
+    <motion.section 
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.25,
+          },
+        },
+      }}
+      className="w-full bg-white py-10 md:py-14"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 flex flex-col gap-6">
 
         {/* Heading */}
-        <h2 className="text-[22px] sm:text-[26px] md:text-[30px] font-bold text-gray-900 mb-5 md:mb-6 leading-tight">
+        <motion.h2 
+          variants={{
+            hidden: { opacity: 0, y: 40 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-[22px] sm:text-[26px] md:text-[30px] font-bold text-gray-900 leading-tight mb-0"
+        >
           Everything you Need at One Place
-        </h2>
+        </motion.h2>
 
-        {/* Tabs */}
-        <div className="flex overflow-x-auto gap-0 border border-gray-200 rounded-xl w-fit max-w-full mb-0"
+        {/* Tabs Control Row */}
+        <motion.div 
+          variants={{
+            hidden: { opacity: 0, y: 40 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex overflow-x-auto gap-0 border border-gray-200 rounded-xl w-fit max-w-full"
           style={{ scrollbarWidth: 'none' }}
         >
           {tabs.map((tab, i) => (
@@ -108,23 +135,38 @@ export default function EverythingYouNeed() {
               {tab.label}
             </button>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Services Panel */}
-        <div className="border border-gray-200 rounded-xl rounded-tl-none mt-0 p-2 sm:p-4">
-          {/* Scrollable row on mobile, wrap on larger */}
-          <div className="flex overflow-x-auto sm:flex-wrap sm:overflow-visible gap-0 divide-x divide-gray-100"
-            style={{ scrollbarWidth: 'none' }}
-          >
-            {tabs[activeTab].services.map((service) => (
-              <div key={service.name} className="flex-shrink-0 sm:flex-shrink">
-                <ServiceCard icon={service.icon} name={service.name} />
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Services Panel Display Box */}
+        <motion.div 
+          variants={{
+            hidden: { opacity: 0, y: 40 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="border border-gray-200 rounded-xl mt-0 p-2 sm:p-4 overflow-hidden"
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="flex overflow-x-auto sm:flex-wrap sm:overflow-visible gap-0 divide-x divide-gray-100 hide-scrollbar"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
+              {tabs[activeTab].services.map((service) => (
+                <div key={service.name} className="flex-shrink-0 sm:flex-shrink">
+                  <ServiceCard icon={service.icon} name={service.name} />
+                </div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
 
       </div>
-    </section>
+    </motion.section>
   );
 }

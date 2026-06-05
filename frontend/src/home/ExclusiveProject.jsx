@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Heart, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // ─── Project Data ─────────────────────────────────────────────────────────────
@@ -7,6 +8,7 @@ const projects = [
   {
     id: 1,
     name: 'Centre Park',
+    route: '/centre-park',
     location: 'Dombivali',
     price: '45.49 L Onwards',
     configuration: '1, 2, 3 BHK',
@@ -42,6 +44,7 @@ const projects = [
 // ─── Single Project Card ──────────────────────────────────────────────────────
 function ProjectCard({ project }) {
   const [liked, setLiked] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col md:flex-row">
@@ -98,7 +101,9 @@ function ProjectCard({ project }) {
           <button className="text-gray-700 font-semibold text-[14px] hover:text-blue-600 transition-colors">
             Contact Us
           </button>
-          <button className="bg-[#1a2c5b] hover:bg-[#162348] text-white font-semibold text-[14px] px-6 py-3 rounded-full transition-colors duration-200">
+          <button 
+           onClick={() => navigate(project.route)}
+          className="bg-[#1a2c5b] hover:bg-[#162348] text-white font-semibold text-[14px] px-6 py-3 rounded-full cursor-pointer transition-colors duration-200">
             Explore now
           </button>
         </div>

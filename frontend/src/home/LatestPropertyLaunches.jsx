@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 const projects = [
   {
     id: 1,
-    image: '/images/west-county-dosti-oak-elevation-20523610.jpeg',
+    image: '/images/l-and-t-crestoria-estate-elevation-LP.jpeg',
     status: 'New Launch',
     title: 'L And T Crestoria Estate',
     location: 'Panvel, Mumbai',
@@ -18,7 +18,7 @@ const projects = [
   },
   {
     id: 2,
-    image: '/images/nextown-coral-images-for-project-36677650.jpeg', 
+    image: '/images/godrej-varanya-elevation-LP.jpeg', 
     status: 'New Launch',
     title: 'Godrej Varanya',
     location: 'Prabhadevi, Mumbai',
@@ -30,7 +30,7 @@ const projects = [
   },
   {
     id: 3,
-    image: '/images/Kalpataru-Magnus.jpeg',
+    image: '/images/tata-new-launch-elevation-LP.jpeg',
     status: 'Ready to Move',
     title: 'Sheth Beaumonte Tower A',
     location: 'Kharghar, Mumbai',

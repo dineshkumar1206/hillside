@@ -90,8 +90,8 @@ export default function Navbar() {
               )}
             </div>
 
-            <a href="#about" className="hover:text-blue-600 transition-colors">About Us</a>
-            <a href="#contact" className="hover:text-blue-600 transition-colors">Contact Us</a>
+            <a href="/about" className="hover:text-blue-600 transition-colors">About Us</a>
+            <a href="/contact" className="hover:text-blue-600 transition-colors">Contact Us</a>
           </div>
         </div>
 
@@ -167,14 +167,14 @@ export default function Navbar() {
           </div>
 
           <a 
-            href="#about" 
+            href="/about" 
             onClick={() => setIsMobileMenuOpen(false)}
             className="hover:text-blue-600 transition-colors pb-2 border-b border-orange-100/30"
           >
             About Us
           </a>
           <a 
-            href="#contact" 
+            href="/contact" 
             onClick={() => setIsMobileMenuOpen(false)}
             className="hover:text-blue-600 transition-colors"
           >

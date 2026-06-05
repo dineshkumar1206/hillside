@@ -9,7 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 
 import Home from './home/Home';
 import About from './pages/About';
-import Contact from './pages/Contact';
+import Contact from './pages/ContactUS';
 import CentrePark from './exclusiveProjects/CentrePark';
 import PurvaPanorama from './exclusiveProjects/PurvaPanorama';
 import HubtownSeasonsEcuador from './fastMovingProjects/HubtownSeasonsEcuador';
@@ -27,7 +27,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/contact" element={<Contact/>} />
 
           {/* Project Pages */}
           <Route path="/centre-park" element={<CentrePark />} />

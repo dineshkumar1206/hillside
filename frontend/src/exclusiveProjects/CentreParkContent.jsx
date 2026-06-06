@@ -211,9 +211,9 @@ export default function CentreParkContent() {
 
               {/* More about */}
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">More about Lodha Centre Park</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">More about Godrej Varanya</h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Central Park project is registered in RERA under new projects as follows—
+                  Godrej Varanya project is registered in RERA under new projects as follows—
                   Palava Eviva K To T, Urbano A, C And F, Urbano I To T P51800006843, Palava Clara J-M
                   P51700000420, Palava Fontana C - H P51700000596, Palava Urbano D And E P51700000577,
                   Palava Clara E - I P51700000540, Palava - Aurelia - D To G P51700000511, Fontana A, B,
@@ -226,7 +226,7 @@ export default function CentreParkContent() {
 
             {/* ── Floor Plan ────────────────────────────────────────────── */}
             <section id="floorplan" className="bg-white border border-gray-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-5">Lodha Centre Park Floor Plans</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-5">Godrej Varanya Floor Plans</h2>
 
               {/* BHK toggle */}
               <div className="flex gap-2 mb-5 overflow-x-auto scrollbar-none pb-1">
@@ -293,7 +293,7 @@ export default function CentreParkContent() {
 
             {/* ── Amenities ─────────────────────────────────────────────── */}
             <section id="amenities" className="bg-white border border-gray-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-5">Lodha Centre Park Amenities</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-5">Godrej Varanya Amenities</h2>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {visibleAmenities.map(({ icon: Icon, label }) => (
@@ -319,7 +319,7 @@ export default function CentreParkContent() {
 
             {/* ── Gallery ───────────────────────────────────────────────── */}
             <section id="gallery" className="bg-white border border-gray-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Lodha Centre Park Gallery</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Godrej Varanya Gallery</h2>
 
               {/* Gallery sub-tabs */}
               <div className="flex gap-0 border-b border-gray-200 mb-5 overflow-x-auto">
@@ -358,7 +358,7 @@ export default function CentreParkContent() {
 
           {/* ── Right: Sticky Contact Form ─────────────────────────────── */}
           <div className="hidden lg:block w-[300px] shrink-0 sticky top-40 self-start">
-            <ContactForm city="Dombivali" subtitle="Lodha Group Centre Park" />
+            <ContactForm city="Kharghar" subtitle="Godrej Group Varanya" />
           </div>
         </div>
       </div>

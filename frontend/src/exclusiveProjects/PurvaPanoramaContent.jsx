@@ -232,14 +232,14 @@ export default function PurvaPanoramaContent() {
 
               {/* More about */}
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">More about PurvaPanorama</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">More about Today - Citadel Juinagar</h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  PurvaPanorama project is registered in RERA under new projects as follows—
+                  Today - Citadel Juinagar project is registered in RERA under new projects as follows—
                   Palava Eviva K To T, Urbano A, C And F, Urbano I To T P51800006843, Palava Clara J-M
                   P51700000420, Palava Fontana C - H P51700000596, Palava Urbano D And E P51700000577,
                   Palava Clara E - I P51700000540, Palava - Aurelia - D To G P51700000511, Fontana A, B,
                   I And J P51700000506, Palava Clara A To D, D1 P51700000448, Palava Urbano G And H
-                  P51700000696. PurvaPanorama is the latest residential project offered by Puravankara Limited.{" "}
+                  P51700000696. Today - Citadel Juinagar is the latest residential project offered by Puravankara Limited.{" "}
                   <a href="#" className="text-blue-500 hover:underline">View more</a>
                 </p>
               </div>
@@ -247,7 +247,7 @@ export default function PurvaPanoramaContent() {
 
             {/* ── Floor Plan ────────────────────────────────────────────── */}
             <section id="floorplan" className="bg-white border border-gray-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-5">PurvaPanorama Floor Plans</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-5">Today - Citadel Juinagar Floor Plans</h2>
 
               {/* BHK toggle */}
               <div className="flex gap-2 mb-5 overflow-x-auto scrollbar-none pb-1">
@@ -314,7 +314,7 @@ export default function PurvaPanoramaContent() {
 
             {/* ── Amenities ─────────────────────────────────────────────── */}
             <section id="amenities" className="bg-white border border-gray-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-5">PurvaPanorama Amenities</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-5">Today - Citadel Juinagar Amenities</h2>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {visibleAmenities.map(({ icon: Icon, label }) => (
@@ -340,7 +340,7 @@ export default function PurvaPanoramaContent() {
 
             {/* ── Gallery ───────────────────────────────────────────────── */}
             <section id="gallery" className="bg-white border border-gray-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">PurvaPanorama Gallery</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Today - Citadel Juinagar Gallery</h2>
 
               {/* Gallery sub-tabs */}
               <div className="flex gap-0 border-b border-gray-200 mb-5 overflow-x-auto">
@@ -536,7 +536,7 @@ export default function PurvaPanoramaContent() {
 
           {/* ── Right: Sticky Contact Form ─────────────────────────────── */}
           <div className="hidden lg:block w-[300px] shrink-0 sticky top-40 self-start">
-            <ContactForm city="Purva Panorama ?" subtitle="Puravankara Limited Purva Panorama" />
+            <ContactForm city="Today - Citadel Juinagar" subtitle="Puravankara Limited Today - Citadel Juinagar" />
           </div>
         </div>
       </div>

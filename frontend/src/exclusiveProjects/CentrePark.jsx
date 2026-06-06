@@ -366,7 +366,7 @@ export default function CentrePark() {
             {/* Title */}
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-2xl font-bold text-gray-900">
-                Lodha Centre Park
+                Godrej Varanya
               </h1>
               <button className="text-gray-400 hover:text-red-500 transition-colors">
                 <Heart size={20} />
@@ -383,7 +383,7 @@ export default function CentrePark() {
                 href="#"
                 className="text-blue-600 hover:underline font-medium"
               >
-                Lodha Group
+                Godrej Group
               </a>
             </p>
 

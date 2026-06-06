@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const projects = [
   {
     id: 1,
-    name: 'Centre Park',
+    name: 'Godrej Varanya',
     route: '/centre-park',
     location: 'Dombivali',
     price: '45.49 L Onwards',
@@ -19,7 +19,7 @@ const projects = [
   },
   {
     id: 2,
-    name: 'Purva Panorama',
+    name: 'Today - Citadel Juinagar',
     route: '/purva-panorama',
     location: 'Thane, Mumbai',
     price: '1.80 Cr Onwards',
@@ -31,7 +31,7 @@ const projects = [
   },
   {
     id: 3,
-    name: 'West County Phase 6 Dosti Maple',
+    name: 'L&T -Thane evara',
     route: '/purva-panorama',
     location: 'Thane West',
     price: '1.15 Cr Onwards',

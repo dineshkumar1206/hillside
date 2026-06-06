@@ -360,7 +360,7 @@ export default function HubtownSeasonsEcuador() {
             {/* Title */}
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-2xl font-bold text-gray-900">
-                Hubtown Seasons Ecuador
+                Godrej Varanya- Kharghar
               </h1>
               <button className="text-gray-400 hover:text-red-500 transition-colors">
                 <Heart size={20} />

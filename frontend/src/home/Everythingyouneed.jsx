@@ -58,16 +58,16 @@ const tabs = [
 // ─── Service Card ─────────────────────────────────────────────────────────────
 function ServiceCard({ icon: Icon, name }) {
   return (
-    <div className="flex flex-col items-center gap-3 px-4 py-5 cursor-pointer group">
+    <div className="flex flex-col items-center gap-3 p-3 sm:px-4 sm:py-5 cursor-pointer group w-full">
       {/* Icon bubble */}
-      <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-gray-50 group-hover:bg-blue-50 border border-gray-100 group-hover:border-blue-200 flex items-center justify-center transition-all duration-200 shadow-sm group-hover:shadow-md">
+      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gray-50 group-hover:bg-blue-50 border border-gray-100 group-hover:border-blue-200 flex items-center justify-center transition-all duration-200 shadow-sm group-hover:shadow-md">
         <Icon
-          size={28}
+          size={24}
           className="text-gray-500 group-hover:text-blue-600 transition-colors duration-200"
           strokeWidth={1.6}
         />
       </div>
-      <span className="text-[13px] text-gray-600 group-hover:text-gray-900 text-center leading-snug font-medium transition-colors duration-200 max-w-[100px]">
+      <span className="text-[12px] text-gray-600 group-hover:text-gray-900 text-center leading-snug font-medium transition-colors duration-200 max-w-[100px]">
         {name}
       </span>
     </div>
@@ -153,12 +153,14 @@ export default function EverythingYouNeed() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="flex overflow-x-auto sm:flex-wrap sm:overflow-visible gap-0 divide-x divide-gray-100 hide-scrollbar"
+              className="grid grid-cols-2 sm:flex sm:flex-wrap sm:overflow-visible gap-4 sm:gap-6 lg:gap-8 hide-scrollbar"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
               {tabs[activeTab].services.map((service) => (
-                <div key={service.name} className="flex-shrink-0 sm:flex-shrink">
+                <div
+                     key={service.name}
+                     className="flex justify-center sm:flex-shrink">
                   <ServiceCard icon={service.icon} name={service.name} />
                 </div>
               ))}

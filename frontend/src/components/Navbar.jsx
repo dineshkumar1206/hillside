@@ -48,7 +48,7 @@ export default function Navbar() {
         {/* Left Side: Logo Container - Pinned Left */}
         <a href="/" className="flex items-center z-10 hover:opacity-90 transition-opacity">
           <img 
-            src="/images/logo.webp" 
+            src="/hillside/Hillsite-Favicon.webp" 
             alt="Real Estate Logo" 
             className="w-20 h-20 object-contain" 
           />

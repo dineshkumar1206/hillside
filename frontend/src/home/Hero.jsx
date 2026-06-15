@@ -32,7 +32,7 @@ export default function Hero() {
           {/* Heading */}
           <h1 className="text-[28px] sm:text-[34px] md:text-[36px] lg:text-[40px] font-[700] text-gray-900 leading-tight">
             Find Your <span className="text-blue-600">Dream</span> Home.{' '}
-            <span className="text-blue-500">0% Brokerage</span>
+            <span className="text-blue-500">0% Brokerag</span>
           </h1>
 
           {/* Subtitle */}

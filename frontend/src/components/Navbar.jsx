@@ -13,6 +13,9 @@ export default function Navbar() {
   
   const mobileMenuRef = useRef(null);
 
+  // Track scroll position
+  const [isScrolled, setIsScrolled] = useState(false);
+
   // Toggle desktop properties dropdown
   const handleToggle = (e) => {
     e.preventDefault();
@@ -24,6 +27,20 @@ export default function Navbar() {
     e.preventDefault();
     setIsMobilePropOpen(!isMobilePropOpen);
   };
+
+  // Monitor scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Close menus automatically if a user clicks outside
   useEffect(() => {
@@ -41,67 +58,64 @@ export default function Navbar() {
   }, [isMobileMenuOpen]);
 
   return (
-    <nav className="w-full bg-transparent sticky top-0 z-50 px-6 py-3 md:px-16 ">
+    /* 
+      CHANGES MADE HERE:
+      1. Changed 'sticky' to 'absolute' so it floats OVER the Hero section rather than pushing it down.
+      2. Dynamic background transitions cleanly from 'bg-transparent' to 'bg-white' on scroll.
+    */
+    <nav className={`w-full absolute top-0 left-0 z-50 px-6 py-3 md:px-16 transition-all duration-300 ${
+      isScrolled ? '!fixed bg-white shadow-md' : 'bg-transparent'
+    }`}>
       {/* Boxed Inner Container matching your Hero width */}
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
         
         {/* Left Side: Logo Container - Pinned Left */}
-        <a href="/" className="flex items-center z-10 hover:opacity-90 transition-opacity">
+        {/* <a href="/" className="flex items-center z-10 hover:opacity-90 transition-opacity">
           <img 
             src="/hillside/Hillsite-Favicon.webp" 
             alt="Real Estate Logo" 
-            className="w-20 h-20 object-contain" 
+            className="w-25 h-25 object-contain" 
           />
-        </a>
+        </a> */}
 
-        {/* Center: Desktop Navigation Links — visible from md (768px) and up */}
+        {/* Center: Desktop Navigation Links */}
+        {/* 
+          CHANGES MADE HERE: 
+          Dynamically changes text to 'text-white' when transparent at the top, 
+          and switches back to 'text-gray-800' once you scroll and the background turns white.
+        */}
         <div className="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none">
-          <div className="flex items-center space-x-8 font-medium text-gray-800 pointer-events-auto">
-            <a href="/" className="hover:text-blue-600 transition-colors">Home</a>
+          <div className={`flex items-center space-x-8 font-medium transition-colors duration-300 pointer-events-auto ${
+            isScrolled ? 'text-gray-800' : 'text-white drop-shadow-sm'
+          }`}>
+            <a href="/" className="hover:text-green-300 transition-colors">Home</a>
             
             {/* <div className="relative py-2" ref={dropdownRef}>
               <button 
                 onClick={handleToggle}
                 className={`hover:text-blue-600 font-semibold transition-colors flex items-center gap-1 cursor-pointer outline-none ${
-                  isOpen ? 'text-blue-600' : 'text-gray-800'
+                  isOpen ? 'text-blue-600' : isScrolled ? 'text-gray-800' : 'text-white'
                 }`}
               >
                 Properties
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="14" 
-                  height="14" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
-                >
-                  <path d="m6 9 6 6 6-6"/>
-                </svg>
+                <svg ... />
               </button>
-
-              {isOpen && (
-                <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 transition-all duration-300 z-50 bg-white rounded-xl shadow-lg">
-                  <Dropdown />
-                </div>
-              )}
             </div> */}
 
-            <a href="/about" className="hover:text-blue-600 transition-colors">About Us</a>
-            <a href="/contact" className="hover:text-blue-600 transition-colors">Contact Us</a>
+            <a href="/about" className="hover:text-green-300 transition-colors">About Us</a>
+            <a href="/contact" className="hover:text-green-300 transition-colors">Contact Us</a>
           </div>
         </div>
 
-        {/* Right Side Balance Spacer for Desktop — visible from md and up */}
+        {/* Right Side Balance Spacer for Desktop */}
         <div className="w-20 h-20 invisible hidden md:block"></div>
 
-        {/* Hamburger Button — only on mobile (below md / below 768px) */}
+        {/* Hamburger Button — Dynamic color styling for mobile clarity */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="mobile-toggle-btn block md:hidden p-2 pr-1 text-gray-800 hover:text-blue-600 focus:outline-none cursor-pointer z-50 mr-1"
+          className={`mobile-toggle-btn block md:hidden p-2 pr-1 hover:text-blue-600 focus:outline-none cursor-pointer z-50 mr-1 transition-colors duration-300 ${
+            isScrolled || isMobileMenuOpen ? 'text-gray-800' : 'text-white'
+          }`}
           aria-label="Toggle navigation menu"
         >
           {isMobileMenuOpen ? (
@@ -120,66 +134,17 @@ export default function Navbar() {
 
       </div>
 
-      {/* --- MOBILE SLIDEOUT DRAWER — only on mobile (below md / below 768px) --- */}
+      {/* --- MOBILE SLIDEOUT DRAWER --- */}
       <div
         ref={mobileMenuRef}
-        className={`fixed top-0 right-0 h-screen w-72 shadow-2xl transform transition-transform duration-300 ease-in-out z-40 md:hidden pt-24 ${
+        className={`fixed top-0 right-0 h-screen w-72 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-40 md:hidden pt-24 ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="flex flex-col p-6 space-y-5 font-medium text-lg text-gray-800">
-          <a 
-            href="/" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="hover:text-blue-600 transition-colors pb-2 border-b border-orange-100/30"
-          >
-            Home
-          </a>
-          
-          {/* Mobile Properties Accordion */}
-          {/* <div className="flex flex-col space-y-2 pb-2 border-b border-orange-100/30">
-            <button 
-              onClick={handleMobilePropToggle}
-              className="flex items-center justify-between w-full text-left font-medium hover:text-blue-600 cursor-pointer outline-none text-gray-800"
-            >
-              <span>Properties</span>
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="16" 
-                height="16" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2.5" 
-                className={`transition-transform duration-300 ${isMobilePropOpen ? 'rotate-180' : 'rotate-0'}`}
-              >
-                <path d="m6 9 6 6 6-6"/>
-              </svg>
-            </button>
-            
-            <div className={`transition-all duration-300 overflow-hidden ${
-              isMobilePropOpen ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0'
-            }`}>
-              <div className="bg-white p-3 rounded-xl border border-orange-100/50 shadow-inner text-base">
-                <Dropdown />
-              </div>
-            </div>
-          </div> */}
-
-          <a 
-            href="/about" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="hover:text-blue-600 transition-colors pb-2 border-b border-orange-100/30"
-          >
-            About Us
-          </a>
-          <a 
-            href="/contact" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="hover:text-blue-600 transition-colors"
-          >
-            Contact Us
-          </a>
+          <a href="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-600 transition-colors pb-2 border-b border-orange-100/30">Home</a>
+          <a href="/about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-600 transition-colors pb-2 border-b border-orange-100/30">About Us</a>
+          <a href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-600 transition-colors">Contact Us</a>
         </div>
       </div>
     </nav>

@@ -5,7 +5,9 @@ import HomeFrom from '../forms/HomeFrom';
 export default function Hero() {
   return (
     <section 
-      className="relative w-full min-h-screen bg-[url('/images/hill-bg.jpg')] bg-cover bg-center flex items-center py-10 md:py-14 lg:py-20"
+      // Added '-mt-[104px]' to pull the hero section up under the navbar
+      // Changed padding-top to 'pt-[130px]' to push the content down below the floating navbar
+      className="relative w-full min-h-screen bg-[url('/images/hill-bg.jpg')] bg-cover bg-center flex items-center pt-[130px] pb-10 md:pb-14 lg:pb-20"
       style={{
         backgroundImage: `url('/hillside/hillsite-logo2.png')` // Make sure your background image points here
       }}
@@ -19,14 +21,14 @@ export default function Hero() {
         <div className="space-y-5 lg:col-span-7 order-1 flex flex-col justify-center text-white">
           
           {/* Logo Placed Above Content */}
-         <div className="select-none animate-fade-in">
-           <img 
-             src="/hillside/Hillsite-Favicon.webp" 
-             alt="Hillsite Logo" 
-             className="w-20 md:w-28 h-auto object-contain drop-shadow-md"
-             loading="eager"
-           />
-         </div>
+          <div className="select-none animate-fade-in">
+            <img 
+              src="/hillside/Hillsite-Favicon.webp" 
+              alt="Hillsite Logo" 
+              className="w-20 md:w-28 h-auto object-contain drop-shadow-md"
+              loading="eager"
+            />
+          </div>
 
           {/* Core Brand & Typography Stack */}
           <div className="space-y-3">

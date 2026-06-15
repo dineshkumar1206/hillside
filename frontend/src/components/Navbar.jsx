@@ -59,7 +59,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-8 font-medium text-gray-800 pointer-events-auto">
             <a href="/" className="hover:text-blue-600 transition-colors">Home</a>
             
-            <div className="relative py-2" ref={dropdownRef}>
+            {/* <div className="relative py-2" ref={dropdownRef}>
               <button 
                 onClick={handleToggle}
                 className={`hover:text-blue-600 font-semibold transition-colors flex items-center gap-1 cursor-pointer outline-none ${
@@ -88,7 +88,7 @@ export default function Navbar() {
                   <Dropdown />
                 </div>
               )}
-            </div>
+            </div> */}
 
             <a href="/about" className="hover:text-blue-600 transition-colors">About Us</a>
             <a href="/contact" className="hover:text-blue-600 transition-colors">Contact Us</a>
@@ -137,7 +137,7 @@ export default function Navbar() {
           </a>
           
           {/* Mobile Properties Accordion */}
-          <div className="flex flex-col space-y-2 pb-2 border-b border-orange-100/30">
+          {/* <div className="flex flex-col space-y-2 pb-2 border-b border-orange-100/30">
             <button 
               onClick={handleMobilePropToggle}
               className="flex items-center justify-between w-full text-left font-medium hover:text-blue-600 cursor-pointer outline-none text-gray-800"
@@ -164,7 +164,7 @@ export default function Navbar() {
                 <Dropdown />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <a 
             href="/about" 

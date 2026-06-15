@@ -1,85 +1,61 @@
 import React from 'react';
 import Container from '../components/Container';
+import HomeFrom from '../forms/HomeFrom'; 
 
 export default function Hero() {
-  const locations = [
-    'Navi Mumbai', 'Mumbai', 'Delhi', 'Noida', 'Gurgaon', 'Thane', 'Pune'
-  ];
-
   return (
-    <section className="w-full bg-[#FFF9E5] py-6 md:py-8 lg:py-6">
+    <section 
+      className="relative w-full min-h-screen bg-[url('/images/hill-bg.jpg')] bg-cover bg-center flex items-center py-10 md:py-14 lg:py-20"
+      style={{
+        backgroundImage: `url('/images/hill-bg.jpg')` // Make sure your background image points here
+      }}
+    >
+      {/* Subtle overlay to guarantee clean text contrast across varying viewport sizes */}
+      <div className="absolute inset-0 bg-black/15 pointer-events-none" />
       
-      <Container className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center">
+      <Container className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
         
         {/* Left Content Column */}
-        <div className="space-y-4 md:space-y-5 animate-fade-up-slow delay-preloader-base order-1">
+        <div className="space-y-5 lg:col-span-7 order-1 flex flex-col justify-center text-white">
+          
+          {/* Logo Placed Above Content */}
+         <div className="select-none animate-fade-in">
+           <img 
+             src="/hillside/Hillsite-Favicon.webp" 
+             alt="Hillsite Logo" 
+             className="w-20 md:w-28 h-auto object-contain drop-shadow-md"
+             loading="eager"
+           />
+         </div>
 
-          {/* Location Tags */}
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12px] md:text-[13px] font-normal">
-            {locations.map((loc, index) => (
-              <span
-                key={`${loc}-${index}`}
-                className="flex items-center gap-0.5 text-gray-700 whitespace-nowrap"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="#E53935">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/>
-                </svg>
-                {loc}
-              </span>
-            ))}
+          {/* Core Brand & Typography Stack */}
+          <div className="space-y-3">
+            {/* Reduced Title Sizes and Font-Weights */}
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight drop-shadow-md">
+              Hillsite
+            </h2>
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-bold leading-snug tracking-normal drop-shadow-md">
+              Invest in Nature. Live Beyond Walls.
+            </h1>
           </div>
 
-          {/* Heading */}
-          <h1 className="text-[28px] sm:text-[34px] md:text-[36px] lg:text-[40px] font-[700] text-gray-900 leading-tight">
-            Find Your <span className="text-blue-600">Dream</span> Home.{' '}
-            <span className="text-blue-500">0% Brokerage</span>
-          </h1>
-
-          {/* Subtitle */}
-          <p className="text-gray-600 max-w-md text-sm sm:text-base md:text-base lg:text-lg">
-            Discover premium homes tailored to your lifestyle, location, and budget.
-          </p>
+          {/* Frosted Glass Information Card Block */}
+          <div className="w-full max-w-2xl bg-black/35 backdrop-blur-md border border-white/10 rounded-xl p-5 md:p-6 text-white/90 space-y-3.5 shadow-xl">
+            <p className="text-xs sm:text-sm font-normal leading-relaxed text-gray-100">
+              At Hillsite, we offer exclusive land in the tranquil beauty of Yelagiri Hills, handpicked for their scenic views, privacy, and connection to nature.
+            </p>
+            <p className="text-xs sm:text-sm font-normal leading-relaxed text-gray-100">
+              Perfect for luxury homes, retreats, or eco-conscious investments, each plot is selected for its landscape value and long-term potential. Our team ensures clear documentation, discreet site visits, and personalized service for refined buyers seeking more than just land — a legacy.
+            </p>
+          </div>
+          
         </div>
 
-        {/* Right Images Layout Column */}
-        <div className="order-2 grid grid-cols-2 gap-x-2.5 gap-y-2.5 md:gap-x-3 md:gap-y-3 items-start w-full md:max-w-[600px] md:ml-auto">
-          
-          {/* 1. Top-Left */}
-          <div className="col-span-1 overflow-hidden rounded-tl-[36px] sm:rounded-tl-[54px] rounded-bl-[16px] sm:rounded-bl-[20px] group cursor-pointer animate-zoom-slow delay-300">
-            <img
-              src="/images/banner-1.jpg"
-              alt="Modern high rise"
-              className="w-full h-[180px] sm:h-[230px] md:h-[270px] lg:h-[300px] object-cover rounded-tl-[36px] sm:rounded-tl-[54px] rounded-bl-[16px] sm:rounded-bl-[20px] transform scale-100 transition-transform duration-1000 ease-out group-hover:scale-105"
-            />
+        {/* Right Column: HomeForm Component */}
+        <div className="lg:col-span-5 order-2 flex justify-center lg:justify-end w-full">
+          <div className="w-full max-w-md lg:max-w-full">
+            <HomeFrom />
           </div>
-          
-          {/* 2. Top-Right */}
-          <div className="col-span-1 overflow-hidden rounded-br-[16px] sm:rounded-br-[20px] group cursor-pointer animate-zoom-slow delay-300">
-            <img
-              src="/images/banner-2.jpg"
-              alt="Interior design living room"
-              className="w-full h-[150px] sm:h-[190px] md:h-[220px] lg:h-[250px] object-cover rounded-br-[16px] sm:rounded-br-[20px] transform scale-100 transition-transform duration-1000 ease-out group-hover:scale-105"
-            />
-          </div>
-
-          {/* 3. Bottom-Left */}
-          <div className="col-span-1 mt-0 overflow-hidden rounded-tl-[14px] sm:rounded-tl-[17px] rounded-bl-[32px] sm:rounded-bl-[45px] group cursor-pointer animate-zoom-normal delay-500">
-            <img
-              src="/images/banner-3.jpg"
-              alt="Luxury interior"
-              className="w-full h-[150px] sm:h-[190px] md:h-[220px] lg:h-[250px] object-cover rounded-tl-[14px] sm:rounded-tl-[17px] rounded-bl-[32px] sm:rounded-bl-[45px] transform scale-100 transition-transform duration-500 ease-out group-hover:scale-105"
-            />
-          </div>
-
-          {/* 4. Bottom-Right */}
-          <div className="col-span-1 -mt-8 sm:-mt-10 md:-mt-12 overflow-hidden rounded-tr-[8px] sm:rounded-tr-[10px] rounded-br-[28px] sm:rounded-br-[40px] group cursor-pointer animate-zoom-normal delay-700">
-            <img
-              src="/images/banner-4.jpg"
-              alt="Modern house exterior"
-              className="w-full h-[180px] sm:h-[230px] md:h-[270px] lg:h-[300px] object-cover rounded-tr-[8px] sm:rounded-tr-[10px] rounded-br-[28px] sm:rounded-br-[40px] transform scale-100 transition-transform duration-500 ease-out group-hover:scale-105"
-            />
-          </div>
-          
         </div>
 
       </Container>

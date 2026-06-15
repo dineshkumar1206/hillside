@@ -7,7 +7,7 @@ export default function Hero() {
     <section 
       className="relative w-full min-h-screen bg-[url('/images/hill-bg.jpg')] bg-cover bg-center flex items-center py-10 md:py-14 lg:py-20"
       style={{
-        backgroundImage: `url('/images/hill-bg.jpg')` // Make sure your background image points here
+        backgroundImage: `url('/hillside/hillsite-logo2.png')` // Make sure your background image points here
       }}
     >
       {/* Subtle overlay to guarantee clean text contrast across varying viewport sizes */}

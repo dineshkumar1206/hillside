@@ -6,7 +6,7 @@ const insights = [
   {
     id: 1,
     title: 'Water Access',
-    subtitle: 'Source availability (borewell, stream, or rainwater potential) with feasibility insights.', // Re-mapped for sub-header placement
+    subtitle: 'Source availability (borewell, stream, or rainwater potential) with feasibility insights.', 
     priceLabel: 'Borewell & Stream',
     configLabel: 'Water Source',
     configValue: 'High Feasibility',
@@ -59,7 +59,7 @@ const insights = [
     configValue: 'Farming & Eco-Stays',
     areaLabel: 'Land Feature',
     areaValue: 'Slope & Clear Drainage',
-    image: '/images/insights/topography-soil.png',
+    image: '/images/centrepark/centre-park-images-for-elevation-of-lodha-centre.jpeg',
     icon: (
       <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 mx-auto">
         <ellipse cx="40" cy="54" rx="26" ry="12" fill="#92400e" />
@@ -79,7 +79,7 @@ const insights = [
     configValue: 'EC, Patta / Chitta',
     areaLabel: 'Compliance',
     areaValue: 'Zoning Cleared',
-    image: '/images/insights/legal-verification.png',
+    image: '/images/centrepark/centre-park-images-for-elevation-of-lodha.jpeg',
     icon: (
       <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 mx-auto">
         <rect x="14" y="30" width="36" height="42" rx="4" fill="#fbbf24" />
@@ -102,7 +102,7 @@ const insights = [
     configValue: 'Agri, Residential, Comm',
     areaLabel: 'Regulations',
     areaValue: 'Complete Checks Done',
-    image: '/images/insights/zoning-approvals.png',
+    image: '/images/centrepark/centre-park-images-for-elevation-of-lodha-centre-park.jpeg',
     icon: (
       <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 mx-auto">
         <rect x="28" y="46" width="24" height="22" rx="2" fill="#16a34a" />
@@ -122,7 +122,7 @@ const insights = [
     configValue: 'Electricity Available',
     areaLabel: 'Alternative Power',
     areaValue: 'High Solar Potential',
-    image: '/images/insights/utilities-power.png',
+    image: '/images/west-county-dosti-oak-elevation-20523610.jpeg',
     icon: (
       <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 mx-auto">
         <line x1="40" y1="10" x2="30" y2="70" stroke="#374151" strokeWidth="3" strokeLinecap="round" />
@@ -297,13 +297,14 @@ export default function ExclusiveProjects() {
 
           {/* Right Graphical View Column */}
           <div className="relative lg:col-span-7 bg-[#ebf8ff] min-h-[260px] lg:min-h-full flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-cover bg-center transition-all duration-300 transform scale-105 filter saturate-[1.1]" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80')` }}>
+            {/* FIX: Replaced the static Unsplash string with dynamic local data mapping */}
+            <div className="absolute inset-0 bg-cover bg-center transition-all duration-300 transform scale-105 filter saturate-[1.1]" style={{ backgroundImage: `url('${currentInsight.image}')` }}>
               {/* Overlay Content Block */}
-              <div className="absolute top-6 left-6 right-6">
+              {/* <div className="absolute top-6 left-6 right-6">
                 <span className="inline-block text-white font-extrabold text-base md:text-xl lg:text-2xl tracking-wide leading-tight drop-shadow-md uppercase">
                   India's Fastest Growing City.
                 </span>
-              </div>
+              </div> */}
             </div>
 
             {/* Invisible Fallback Vector Architecture */}

@@ -12,20 +12,20 @@ export default function Footer() {
           <div className="lg:col-span-4 space-y-4">
             <div>
               <img
-                src="/images/logo.webp"
+                src="/hillside/Hillsite-Favicon.webp"
                 alt="Connect You Real Estate Logo"
                 className="h-15 w-auto brightness-110"
               />
             </div>
             <p className="text-xs md:text-sm text-slate-400 leading-relaxed font-normal">
-              Redefining the real estate landscape across India with premium properties, end-to-end guidance, and an absolute 0% brokerage consultation ecosystem.
+             At Hillsite, we offer exclusive land in the tranquil beauty of Yelagiri Hills, handpicked for their scenic views, privacy, and connection to nature.
             </p>
             <div className="space-y-1.5 text-xs text-slate-400 font-normal">
               <p className="flex items-center gap-2">
                 <span>📍</span> Vashi , Navi Mumbai - 400703.
               </p>
               <p className="flex items-center gap-2">
-                <span>✉️</span> support@connectyourealestate.com
+                <span>✉️</span> thiruyh@gmail.com
               </p>
             </div>
           </div>
@@ -100,7 +100,7 @@ export default function Footer() {
           
           {/* Copyright Tag */}
           <div className="text-center sm:text-left text-xs text-slate-500 font-normal order-2 sm:order-1">
-            © {new Date().getFullYear()} ConnectYou Real Estate. All Rights Reserved.
+            © {new Date().getFullYear()} Hill Site. All Rights Reserved.
           </div>
 
           {/* Cleaned Social Icon Trays */}

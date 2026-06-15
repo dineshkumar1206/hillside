@@ -2,66 +2,121 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-// ─── Updated Feature Data ───────────────────────────────────────────────────
+// ─── Sample Data ────────────────────────────────────────────────────────────
 const projects = [
   {
     id: 1,
     image: '/images/Hubtown-Seasons-Ecuador-1.jpg',
     route: '/hubtown-seasons-ecuador',
-    status: 'Premium Parcel',
-    title: 'Handpicked Scenic Plots',
-    description: 'We specialize in premium land parcels located amidst breathtaking natural surroundings. From panoramic hill views to lush green landscapes, every plot is carefully chosen to offer both aesthetic appeal and long-term investment value.',
+    status: 'Under Construction',
+    title: 'Godrej Varanya- Kharghar',
+    location: 'Chembur, Mumbai',
+    price: 'Price on request',
+    priceColor: 'text-orange-500',
+    config: '2,3,4,5,6 BHK Apartment',
+    area: 'Area on request',
+    builder: 'Hubtown Limited',
   },
   {
     id: 2,
     image: '/images/Rustomjee-Crown-Phase-2.jpeg',
     route: '/hubtown-seasons-ecuador',
-    status: 'Verified',
-    title: 'Verified Ownership Documents',
-    description: 'Every property listed with Hillsite undergoes thorough verification to ensure clear ownership, authentic documentation, and complete legal compliance. This gives buyers confidence and eliminates the risk of future disputes.',
+    status: 'Under Construction',
+    title: 'Today - Citadel Juinagar',
+    location: 'Prabhadevi, Mumbai',
+    price: '₹ 9.61 Cr Onwards',
+    priceColor: 'text-orange-500',
+    config: '3,4,5 BHK Apartment',
+    area: 'Area on request',
+    builder: 'Rustomjee Builders Mumbai',
   },
   {
     id: 3,
     image: '/images/beaumonte-tower-a-elevation-104327837.jpeg',
     route: '/hubtown-seasons-ecuador',
-    status: 'Direct Access',
-    title: 'Direct Access to Verified Landowners',
-    description: 'We connect buyers directly with genuine landowners and authorized sellers, ensuring transparency throughout the transaction process. This approach promotes fair pricing, trust, and a smoother buying experience.',
+    status: 'Ready to Move',
+    title: 'L&T -Thane evara',
+    location: 'Sion, Mumbai',
+    price: 'Price on request',
+    priceColor: 'text-orange-500',
+    config: '2,3,4 BHK Apartment',
+    area: 'Area on request',
+    builder: 'Sheth Creators',
   },
   {
     id: 4,
     image: '/images/l-t-crescent-bay-elevation-154187177.jpeg',
     route: '/hubtown-seasons-ecuador',
-    status: 'Verified',
-    title: 'Clear Infrastructure Insights',
-    description: 'Before making a purchase, buyers receive detailed information about road connectivity, water availability, terrain conditions, electricity access, and nearby amenities, helping them make informed decisions.',
+    status: 'Ready to Move',
+    title: 'Tulsi Sahyadri- Panvel',
+    location: 'Parel, Mumbai',
+    price: 'Price on request',
+    priceColor: 'text-orange-500',
+    config: '2,3,4 BHK Apartment',
+    area: 'Area on request',
+    builder: 'L And T Realty',
   },
   {
     id: 5,
     image: '/images/nextown-coral-images-for-project-36677650.jpeg',
     route: '/hubtown-seasons-ecuador',
-    status: 'Assisted',
-    title: 'Legal & Registration Support',
-    description: 'Our team provides comprehensive assistance with legal procedures, documentation, and property registration. We handle the complexities of the process so you can focus on planning your investment with confidence.',
+    status: 'Under Construction',
+    title: 'Marathon Nextown Coral',
+    location: 'Dombivali, Mumbai',
+    price: '₹ 41.10 L Onwards',
+    priceColor: 'text-orange-500',
+    config: '1 BHK Apartment',
+    area: 'Area on request',
+    builder: 'By Marathon Realty',
   },
   {
     id: 6,
     image: '/images/Kalpataru-Magnus.jpeg',
     route: '/hubtown-seasons-ecuador',
-    status: 'Support Active',
-    title: 'After-Sale Service',
-    description: "Our commitment doesn't end with the purchase. Whether you need assistance with fencing, borewell installation, land development, maintenance, or local contacts, we continue to support you even after the transaction is complete.",
+    status: 'Ready to Move',
+    title: 'Kalpataru Magnus',
+    location: 'Bandra East, Mumbai',
+    price: '₹ 6.32 Cr Onwards',
+    priceColor: 'text-orange-500',
+    config: '3,4,5 BHK Apartment',
+    area: 'Area on request',
+    builder: 'By Kalpataru Group',
+  },
+  {
+    id: 7,
+    image: '/images/west-county-dosti-oak-elevation-20523610.jpeg',
+    route: '/hubtown-seasons-ecuador',
+    status: 'Ready to Move',
+    title: 'Dosti West County Oak',
+    location: 'Thane West, Mumbai',
+    price: 'Price on request',
+    priceColor: 'text-orange-500',
+    config: '1,2 BHK Apartment',
+    area: 'Area on request',
+    builder: 'By Dosti Realty Mumbai',
   }
 ];
 
 // ─── Status Icon ─────────────────────────────────────────────────────────────
 function StatusIcon({ status }) {
+  const isReady = status === 'Ready to Move';
+
   return (
     <span className="flex items-center gap-1.5 bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium px-3 py-1.5 rounded-full">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-        <polyline points="22 4 12 14.01 9 11.01"/>
-      </svg>
+      {isReady ? (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="7.5" cy="15.5" r="5.5"/>
+          <path d="m21 2-9.6 9.6"/>
+          <path d="m15.5 7.5 3 3L22 7l-3-3"/>
+        </svg>
+      ) : (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 20h20"/>
+          <path d="M10 20V8l8-4v16"/>
+          <path d="M6 20v-4"/>
+          <rect x="14" y="14" width="2" height="6"/>
+        </svg>
+      )}
       {status}
     </span>
   );
@@ -126,13 +181,22 @@ function PropertyCard({ project }) {
       </div>
 
       {/* Card Body */}
-      <div className="p-4 space-y-2">
-        <h3 className="font-semibold text-gray-900 text-[16px] leading-snug line-clamp-1">
+      <div className="p-4 space-y-1.5">
+        <h3 className="font-semibold text-gray-900 text-[15px] leading-snug line-clamp-1">
           {project.title}
         </h3>
-        <p className="text-gray-500 text-[13px] leading-relaxed line-clamp-4">
-          {project.description}
-        </p>
+        <p className="text-gray-500 text-[13px]">{project.location}</p>
+        <p className={`font-bold text-[15px] ${project.priceColor}`}>{project.price}</p>
+
+        {/* Config + Area */}
+        <div className="flex items-center gap-2 text-[12px] text-gray-500 pt-0.5">
+          <span>{project.config}</span>
+          <span className="w-px h-3 bg-gray-300"></span>
+          <span>{project.area}</span>
+        </div>
+
+        {/* Builder */}
+        <p className="text-[12px] text-gray-400 pt-0.5">By {project.builder}</p>
       </div>
     </div>
   );
@@ -206,42 +270,35 @@ export default function FastMovingProjects() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 flex flex-col gap-6">
 
-        {/* Header Block */}
+        {/* Header Row */}
         <motion.div 
           variants={{
             hidden: { opacity: 0, y: 40 },
             visible: { opacity: 1, y: 0 },
           }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="space-y-3"
+          className="flex items-center justify-between"
         >
-          <div className="flex items-center justify-between">
-            <h2 className="text-[22px] sm:text-[26px] md:text-[30px] font-bold text-gray-900 leading-tight">
-              Why Choose Hillsite?
-            </h2>
+          <h2 className="text-[22px] sm:text-[26px] md:text-[30px] font-bold text-gray-900 leading-tight">
+           Why Choose Hillsite?
+          </h2>
 
-            <div className="flex items-center gap-3">
-              <a
-                href="#"
-                className="hidden sm:flex items-center gap-1 text-blue-600 text-sm font-medium hover:underline"
-              >
-                View all
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m9 18 6-6-6-6"/>
-                </svg>
-              </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="#"
+              className="hidden sm:flex items-center gap-1 text-blue-600 text-sm font-medium hover:underline"
+            >
+              View all
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </a>
 
-              <div className="flex gap-2">
-                <ArrowButton direction="left" onClick={() => scroll('left')} disabled={!canScrollLeft} />
-                <ArrowButton direction="right" onClick={() => scroll('right')} disabled={!canScrollRight} />
-              </div>
+            <div className="flex gap-2">
+              <ArrowButton direction="left" onClick={() => scroll('left')} disabled={!canScrollLeft} />
+              <ArrowButton direction="right" onClick={() => scroll('right')} disabled={!canScrollRight} />
             </div>
           </div>
-          
-          {/* Subheading / Description */}
-          <p className="text-gray-600 text-sm md:text-base max-w-3xl leading-relaxed">
-            When you invest in land, you're investing in your future, lifestyle, and long-term peace of mind. At Hillsite, we make the land-buying process transparent, secure, and hassle-free by offering carefully selected properties backed by professional support and trusted expertise.
-          </p>
         </motion.div>
 
         {/* Carousel Track */}

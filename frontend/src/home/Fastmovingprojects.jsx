@@ -174,7 +174,7 @@ export default function FastMovingProjects() {
       } else {
         el.scrollBy({ left: step, behavior: 'smooth' });
       }
-    }, 3000);
+    }, 2500);
 
     return () => {
       el.removeEventListener('scroll', checkScroll);

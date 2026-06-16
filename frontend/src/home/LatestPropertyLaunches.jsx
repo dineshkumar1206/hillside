@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 const projects = [
   {
     id: 1,
-    image: '/images/l-and-t-crestoria-estate-elevation-LP.jpeg',
+    image: '/hillside/img-2.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'New Launch',
     title: 'Godrej Varanya- Kharghar',
@@ -19,7 +19,7 @@ const projects = [
   },
   {
     id: 2,
-    image: '/images/godrej-varanya-elevation-LP.jpeg', 
+    image: '/hillside/img-3.jpeg', 
     route: '/hubtown-seasons-ecuador',
     status: 'New Launch',
     title: 'Today - Citadel Juinagar',
@@ -32,7 +32,7 @@ const projects = [
   },
   {
     id: 3,
-    image: '/images/tata-new-launch-elevation-LP.jpeg',
+    image: '/hillside/img-4.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Ready to Move',
     title: 'L&T -Thane evara',
@@ -45,7 +45,7 @@ const projects = [
   },
   {
     id: 4,
-    image: '/images/l-t-crescent-bay-elevation-154187177.jpeg',
+    image: '/hillside/img-5.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Ready to Move',
     title: 'Tulsi Sahyadri- Panvel',
@@ -58,7 +58,7 @@ const projects = [
   },
   {
     id: 5,
-    image: '/images/Rustomjee-Crown-Phase-2.jpeg',
+    image: '/hillside/img-6.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Under Construction',
     title: 'L&T Malad',
@@ -71,7 +71,7 @@ const projects = [
   },
   {
     id: 6,
-    image: '/images/beaumonte-tower-a-elevation-104327837.jpeg',
+    image: '/hillside/img-7.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Ready to Move',
     title: 'Kalpataru Magnus',
@@ -84,7 +84,7 @@ const projects = [
   },
   {
     id: 7,
-    image: '/images/west-county-dosti-oak-elevation-20523610.jpeg',
+    image: '/hillside/img-8.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Ready to Move',
     title: 'Dosti West County Oak',
@@ -173,10 +173,10 @@ function PropertyCard({ project }) {
           </button>
         </div>
 
-        {/* Status Badge */}
-        <div className="absolute bottom-3 left-3">
+        {/* Status Badge — COMMENTED OUT HERE */}
+        {/* <div className="absolute bottom-3 left-3">
           <StatusIcon status={project.status} />
-        </div>
+        </div> */}
       </div>
 
       {/* Card Body */}

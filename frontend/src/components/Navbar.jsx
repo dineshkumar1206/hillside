@@ -13,9 +13,6 @@ export default function Navbar() {
   
   const mobileMenuRef = useRef(null);
 
-  // Track scroll position
-  const [isScrolled, setIsScrolled] = useState(false);
-
   // Toggle desktop properties dropdown
   const handleToggle = (e) => {
     e.preventDefault();
@@ -27,20 +24,6 @@ export default function Navbar() {
     e.preventDefault();
     setIsMobilePropOpen(!isMobilePropOpen);
   };
-
-  // Monitor scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Close menus automatically if a user clicks outside
   useEffect(() => {
@@ -58,43 +41,34 @@ export default function Navbar() {
   }, [isMobileMenuOpen]);
 
   return (
-    /* 
-      CHANGES MADE HERE:
-      1. Changed 'sticky' to 'absolute' so it floats OVER the Hero section rather than pushing it down.
-      2. Dynamic background transitions cleanly from 'bg-transparent' to 'bg-white' on scroll.
+    /* UPDATED STYLING:
+      - Changed to 'sticky top-0 left-0' so it stays locked at the top of the viewport.
+      - Fixed background to solid white ('bg-white') with a clean bottom shadow ('shadow-sm').
     */
-    <nav className={`w-full absolute top-0 left-0 z-50 px-6 py-3 md:px-16 transition-all duration-300 ${
-      isScrolled ? '!fixed bg-white shadow-md' : 'bg-transparent'
-    }`}>
+    <nav className="w-full bg-gray-50 sticky top-0 left-0 z-50 px-6 py-3 md:px-16 shadow-sm transition-all duration-300">
       {/* Boxed Inner Container matching your Hero width */}
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
         
         {/* Left Side: Logo Container - Pinned Left */}
-        {/* <a href="/" className="flex items-center z-10 hover:opacity-90 transition-opacity">
+        <a href="/" className="flex items-center z-10 hover:opacity-90 transition-opacity">
           <img 
             src="/hillside/Hillsite-Favicon.webp" 
             alt="Real Estate Logo" 
             className="w-25 h-25 object-contain" 
           />
-        </a> */}
+        </a>
 
         {/* Center: Desktop Navigation Links */}
-        {/* 
-          CHANGES MADE HERE: 
-          Dynamically changes text to 'text-white' when transparent at the top, 
-          and switches back to 'text-gray-800' once you scroll and the background turns white.
-        */}
         <div className="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none">
-          <div className={`flex items-center space-x-8 font-medium transition-colors duration-300 pointer-events-auto ${
-            isScrolled ? 'text-gray-800' : 'text-white drop-shadow-sm'
-          }`}>
-            <a href="/" className="hover:text-green-300 transition-colors">Home</a>
+          {/* Base text set uniformly to text-black */}
+          <div className="flex items-center space-x-8 font-medium transition-colors duration-300 pointer-events-auto text-black">
+            <a href="/" className="hover:text-green-500 transition-colors">Home</a>
             
             {/* <div className="relative py-2" ref={dropdownRef}>
               <button 
                 onClick={handleToggle}
-                className={`hover:text-blue-600 font-semibold transition-colors flex items-center gap-1 cursor-pointer outline-none ${
-                  isOpen ? 'text-blue-600' : isScrolled ? 'text-gray-800' : 'text-white'
+                className={`hover:text-green-500 font-semibold transition-colors flex items-center gap-1 cursor-pointer outline-none ${
+                  isOpen ? 'text-green-500' : 'text-black'
                 }`}
               >
                 Properties
@@ -102,20 +76,18 @@ export default function Navbar() {
               </button>
             </div> */}
 
-            <a href="/about" className="hover:text-green-300 transition-colors">About Us</a>
-            <a href="/contact" className="hover:text-green-300 transition-colors">Contact Us</a>
+            <a href="/about" className="hover:text-green-500 transition-colors">About Us</a>
+            <a href="/contact" className="hover:text-green-500 transition-colors">Contact Us</a>
           </div>
         </div>
 
         {/* Right Side Balance Spacer for Desktop */}
         <div className="w-20 h-20 invisible hidden md:block"></div>
 
-        {/* Hamburger Button — Dynamic color styling for mobile clarity */}
+        {/* Hamburger Button — Changed base color to text-black to match white header theme */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className={`mobile-toggle-btn block md:hidden p-2 pr-1 hover:text-blue-600 focus:outline-none cursor-pointer z-50 mr-1 transition-colors duration-300 ${
-            isScrolled || isMobileMenuOpen ? 'text-gray-800' : 'text-white'
-          }`}
+          className="mobile-toggle-btn block md:hidden p-2 pr-1 hover:text-green-500 focus:outline-none cursor-pointer z-50 mr-1 text-black transition-colors duration-300"
           aria-label="Toggle navigation menu"
         >
           {isMobileMenuOpen ? (
@@ -141,10 +113,10 @@ export default function Navbar() {
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex flex-col p-6 space-y-5 font-medium text-lg text-gray-800">
-          <a href="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-600 transition-colors pb-2 border-b border-orange-100/30">Home</a>
-          <a href="/about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-600 transition-colors pb-2 border-b border-orange-100/30">About Us</a>
-          <a href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-600 transition-colors">Contact Us</a>
+        <div className="flex flex-col p-6 space-y-5 font-medium text-lg text-black">
+          <a href="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500 transition-colors pb-2 border-b border-orange-100/30">Home</a>
+          <a href="/about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500 transition-colors pb-2 border-b border-orange-100/30">About Us</a>
+          <a href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500 transition-colors">Contact Us</a>
         </div>
       </div>
     </nav>

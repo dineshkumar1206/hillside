@@ -21,14 +21,14 @@ export default function Hero() {
         <div className="space-y-5 lg:col-span-7 order-1 flex flex-col justify-center text-white">
           
           {/* Logo Placed Above Content */}
-          <div className="select-none animate-fade-in">
+          {/* <div className="select-none animate-fade-in">
             <img 
               src="/hillside/Hillsite-Favicon.webp" 
               alt="Hillsite Logo" 
               className="w-20 md:w-28 h-auto object-contain drop-shadow-md"
               loading="eager"
             />
-          </div>
+          </div> */}
 
           {/* Core Brand & Typography Stack */}
           <div className="space-y-3">

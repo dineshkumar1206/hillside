@@ -6,15 +6,14 @@ import { motion } from 'framer-motion';
 const projects = [
   {
     id: 1,
-    image: '/images/Hubtown-Seasons-Ecuador-1.jpg',
+    image: '/hillside/Scenic-View.webp',
     route: '/hubtown-seasons-ecuador',
-    status: 'Premium Parcel',
     title: 'Handpicked Scenic Plots',
     description: 'We specialize in premium land parcels located amidst breathtaking natural surroundings. From panoramic hill views to lush green landscapes, every plot is carefully chosen to offer both aesthetic appeal and long-term investment value.',
   },
   {
     id: 2,
-    image: '/images/Rustomjee-Crown-Phase-2.jpeg',
+    image: '/hillside/Ownership-Documents.webp',
     route: '/hubtown-seasons-ecuador',
     status: 'Verified',
     title: 'Verified Ownership Documents',
@@ -22,7 +21,7 @@ const projects = [
   },
   {
     id: 3,
-    image: '/images/beaumonte-tower-a-elevation-104327837.jpeg',
+    image: '/hillside/Direct-Accees-to-Owners.webp',
     route: '/hubtown-seasons-ecuador',
     status: 'Direct Access',
     title: 'Direct Access to Verified Landowners',
@@ -30,7 +29,7 @@ const projects = [
   },
   {
     id: 4,
-    image: '/images/l-t-crescent-bay-elevation-154187177.jpeg',
+    image: '/hillside/Infrastructure-Clarity.webp',
     route: '/hubtown-seasons-ecuador',
     status: 'Verified',
     title: 'Clear Infrastructure Insights',
@@ -38,7 +37,7 @@ const projects = [
   },
   {
     id: 5,
-    image: '/images/nextown-coral-images-for-project-36677650.jpeg',
+    image: '/hillside/Legal-Registration-Support.webp',
     route: '/hubtown-seasons-ecuador',
     status: 'Assisted',
     title: 'Legal & Registration Support',
@@ -46,26 +45,13 @@ const projects = [
   },
   {
     id: 6,
-    image: '/images/Kalpataru-Magnus.jpeg',
+    image: '/hillside/After-Sales-Service.webp',
     route: '/hubtown-seasons-ecuador',
     status: 'Support Active',
     title: 'After-Sale Service',
     description: "Our commitment doesn't end with the purchase. Whether you need assistance with fencing, borewell installation, land development, maintenance, or local contacts, we continue to support you even after the transaction is complete.",
   }
 ];
-
-// ─── Status Icon ─────────────────────────────────────────────────────────────
-function StatusIcon({ status }) {
-  return (
-    <span className="flex items-center gap-1.5 bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium px-3 py-1.5 rounded-full">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-        <polyline points="22 4 12 14.01 9 11.01"/>
-      </svg>
-      {status}
-    </span>
-  );
-}
 
 // ─── Property Card ────────────────────────────────────────────────────────────
 function PropertyCard({ project }) {
@@ -119,10 +105,7 @@ function PropertyCard({ project }) {
           </button>
         </div>
 
-        {/* Status Badge */}
-        <div className="absolute bottom-3 left-3">
-          <StatusIcon status={project.status} />
-        </div>
+        {/* STATUS BADGE REMOVED FROM HERE */}
       </div>
 
       {/* Card Body */}
@@ -170,15 +153,33 @@ export default function FastMovingProjects() {
     setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
   };
 
+  // Unified effect for manual scroll event listeners & auto-scrolling interval
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+    
     checkScroll();
     el.addEventListener('scroll', checkScroll, { passive: true });
     window.addEventListener('resize', checkScroll);
+
+    // Auto-scroll loop every 3 seconds
+    const autoScrollInterval = setInterval(() => {
+      const cardWidth = el.querySelector('[class*="flex-shrink-0"]')?.offsetWidth || 300;
+      const gap = 16; // gap-4 equivalent in pixels
+      const step = cardWidth + gap;
+
+      // If we've reached near the end of the scroll track, loop back to start
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    }, 3000);
+
     return () => {
       el.removeEventListener('scroll', checkScroll);
       window.removeEventListener('resize', checkScroll);
+      clearInterval(autoScrollInterval); // Clean up interval on unmount
     };
   }, []);
 

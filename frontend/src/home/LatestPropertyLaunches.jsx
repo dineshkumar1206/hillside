@@ -2,15 +2,15 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-// ─── Sample Data ────────────────────────────────────────────────────────────
+// ─── Sample Data (Updated for Yelagiri) ──────────────────────────────────────
 const projects = [
   {
     id: 1,
     image: '/hillside/img-2.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'New Launch',
-    title: 'Godrej Varanya- Kharghar',
-    location: 'Panvel, Mumbai',
+    title: 'Athanavur, Yelagiri',
+    location: 'Yelagiri',
     price: '₹1.18 Cr Onward',
     priceColor: 'text-orange-500',
     config: '2,3,4 BHK Apartment',
@@ -22,21 +22,21 @@ const projects = [
     image: '/hillside/img-3.jpeg', 
     route: '/hubtown-seasons-ecuador',
     status: 'New Launch',
-    title: 'Today - Citadel Juinagar',
-    location: 'Prabhadevi, Mumbai',
+    title: 'Mangalam, Yelagiri',
+    location: 'Yelagiri',
     price: '₹ 9.61 Cr Onwards',
     priceColor: 'text-orange-500',
     config: '3,4,5 BHK Apartment',
     area: 'Area on request',
-    builder: 'Rustomjee Builders Mumbai',
+    builder: 'Rustomjee Builders',
   },
   {
     id: 3,
     image: '/hillside/img-4.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Ready to Move',
-    title: 'L&T -Thane evara',
-    location: 'Kharghar, Mumbai',
+    title: 'Punganoor, Yelagiri',
+    location: 'Yelagiri',
     price: '₹2.30 Cr Onwards',
     priceColor: 'text-orange-500',
     config: '2,3 BHK Apartment',
@@ -48,8 +48,8 @@ const projects = [
     image: '/hillside/img-5.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Ready to Move',
-    title: 'Tulsi Sahyadri- Panvel',
-    location: 'Ghansoli, Mumbai',
+    title: 'Kottaiyur, Yelagiri',
+    location: 'Yelagiri',
     price: '₹1.75 Cr Onwards',
     priceColor: 'text-orange-500',
     config: '2,3 BHK Apartment',
@@ -61,8 +61,8 @@ const projects = [
     image: '/hillside/img-6.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Under Construction',
-    title: 'L&T Malad',
-    location: 'Malad East, Mumbai',
+    title: 'Nilavoor, Yelagiri',
+    location: 'Yelagiri East',
     price: '₹2.59 Cr Onwards',
     priceColor: 'text-orange-500',
     config: '1 BHK Apartment',
@@ -74,8 +74,8 @@ const projects = [
     image: '/hillside/img-7.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Ready to Move',
-    title: 'Kalpataru Magnus',
-    location: 'Bandra East, Mumbai',
+    title: 'Boathouse Road, Yelagiri',
+    location: 'Yelagiri',
     price: '₹ 6.32 Cr Onwards',
     priceColor: 'text-orange-500',
     config: '3,4,5 BHK Apartment',
@@ -87,13 +87,13 @@ const projects = [
     image: '/hillside/img-8.jpeg',
     route: '/hubtown-seasons-ecuador',
     status: 'Ready to Move',
-    title: 'Dosti West County Oak',
-    location: 'Thane West, Mumbai',
+    title: 'Yelagiri West',
+    location: 'Yelagiri Hills, Vellore',
     price: 'Price on request',
     priceColor: 'text-orange-500',
     config: '1,2 BHK Apartment',
     area: 'Area on request',
-    builder: 'By Dosti Realty Mumbai',
+    builder: 'By Dosti Realty',
   }
 ];
 
@@ -172,11 +172,6 @@ function PropertyCard({ project }) {
             </svg>
           </button>
         </div>
-
-        {/* Status Badge — COMMENTED OUT HERE */}
-        {/* <div className="absolute bottom-3 left-3">
-          <StatusIcon status={project.status} />
-        </div> */}
       </div>
 
       {/* Card Body */}
@@ -225,6 +220,7 @@ export default function LatestPropertyLaunches() {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
 
   const checkScroll = () => {
     const el = scrollRef.current;
@@ -244,6 +240,29 @@ export default function LatestPropertyLaunches() {
       window.removeEventListener('resize', checkScroll);
     };
   }, []);
+
+  // ─── Added Auto Scroll Logic ───────────────────────────────────────────────
+  useEffect(() => {
+    // Don't auto-scroll if the user is hovering over the carousel track
+    if (isHovered) return;
+
+    const interval = setInterval(() => {
+      const el = scrollRef.current;
+      if (!el) return;
+
+      const cardWidth = el.querySelector('[class*="flex-shrink-0"]')?.offsetWidth || 300;
+      const scrollAmount = cardWidth + 16; // card width + gap parameter
+
+      // If we are at the end of the carousel, loop back to the start
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }, 2500); // 2.5 seconds configuration
+
+    return () => clearInterval(interval);
+  }, [isHovered]);
 
   const scroll = (dir) => {
     const el = scrollRef.current;
@@ -300,7 +319,7 @@ export default function LatestPropertyLaunches() {
           </div>
         </motion.div>
 
-        {/* Carousel Track */}
+        {/* Carousel Track with Hover Listeners */}
         <motion.div
           variants={{
             hidden: { opacity: 0, y: 40 },
@@ -308,6 +327,8 @@ export default function LatestPropertyLaunches() {
           }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           ref={scrollRef}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           className="flex gap-4 overflow-x-auto scroll-smooth pb-3 hide-scrollbar"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >

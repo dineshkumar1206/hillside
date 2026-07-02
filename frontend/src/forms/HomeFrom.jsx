@@ -11,6 +11,9 @@ const HomeForm = () => {
     landscape: [],
     requirements: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,9 +30,50 @@ const HomeForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Submitted:', formData);
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.requirements.trim()) {
+      alert("Name, phone, and requirements are required.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/leads/home", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus("success");
+        setFormData({
+          name: '',
+          phone: '',
+          landSize: '',
+          unitSize: 'Sq.Ft',
+          houseOption: '',
+          landType: [],
+          landscape: [],
+          requirements: ''
+        });
+      } else {
+        setSubmitStatus("error");
+        setErrorMessage(data.message || "Failed to submit request.");
+      }
+    } catch (err) {
+      setSubmitStatus("error");
+      setErrorMessage("Unable to connect to server. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -177,13 +221,27 @@ const HomeForm = () => {
           ></textarea>
         </div>
 
+        {/* Status Alerts */}
+        {submitStatus === "success" && (
+          <div className="bg-green-500/20 border border-green-500/30 text-green-300 text-xs rounded-md p-2.5 text-center font-medium">
+            ✔ Your property requirements have been submitted! We will contact you soon.
+          </div>
+        )}
+
+        {submitStatus === "error" && (
+          <div className="bg-red-500/20 border border-red-500/30 text-red-300 text-xs rounded-md p-2.5 text-center font-medium">
+            ⚠ {errorMessage}
+          </div>
+        )}
+
         {/* Submit Button */}
         <div className="flex justify-center pt-2">
           <button
             type="submit"
-            className="px-8 py-2 bg-[#7fff00] hover:bg-[#66cd00] text-black font-bold rounded-md shadow-md transition duration-200"
+            disabled={isSubmitting}
+            className="px-8 py-2 bg-[#7fff00] hover:bg-[#66cd00] text-black font-bold rounded-md shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Send
+            {isSubmitting ? "Sending..." : "Send"}
           </button>
         </div>
       </form>

@@ -46,6 +46,9 @@ export default function Footer() {
               <li>
                 <a href="/careers" className="hover:text-blue-500 transition-colors duration-200">Careers</a>
               </li>
+              <li>
+                <a href="/login" className="text-slate-500 hover:text-[#7fff00] transition-colors duration-200">Admin Portal</a>
+              </li>
             </ul>
           </div>
 

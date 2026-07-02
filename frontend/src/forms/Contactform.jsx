@@ -10,10 +10,46 @@ import { CheckCircle2, MessageCircle } from "lucide-react";
 export default function ContactForm({ city = "Dombivali", subtitle = "Lodha Group Centre Park" }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Callback requested for ${name} — ${phone}`);
+    if (!name.trim() || !phone.trim()) {
+      alert("Please fill in your name and phone number.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/leads/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, phone, city, subtitle }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus("success");
+        setName("");
+        setPhone("");
+      } else {
+        setSubmitStatus("error");
+        setErrorMessage(data.message || "Failed to submit request.");
+      }
+    } catch (err) {
+      setSubmitStatus("error");
+      setErrorMessage("Unable to connect to server. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -30,7 +66,8 @@ export default function ContactForm({ city = "Dombivali", subtitle = "Lodha Grou
           placeholder="Enter your name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          disabled={isSubmitting}
+          className="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60"
         />
 
         <div className="flex border border-gray-300 rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
@@ -45,15 +82,29 @@ export default function ContactForm({ city = "Dombivali", subtitle = "Lodha Grou
             placeholder="Enter your phone number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="flex-1 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none"
+            disabled={isSubmitting}
+            className="flex-1 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none disabled:opacity-60"
           />
         </div>
 
+        {submitStatus === "success" && (
+          <div className="bg-green-50 border border-green-200 text-green-700 text-xs rounded-md p-2.5 text-center font-medium">
+            ✔ Callback requested successfully! We'll contact you in 5 mins.
+          </div>
+        )}
+
+        {submitStatus === "error" && (
+          <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded-md p-2.5 text-center font-medium">
+            ⚠ {errorMessage}
+          </div>
+        )}
+
         <button
           onClick={handleSubmit}
-          className="w-full bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 rounded-md text-sm transition-colors duration-200"
+          disabled={isSubmitting}
+          className="w-full bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 rounded-md text-sm transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Request CallBack
+          {isSubmitting ? "Requesting..." : "Request CallBack"}
         </button>
       </div>
 

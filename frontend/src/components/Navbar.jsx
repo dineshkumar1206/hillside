@@ -1,17 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../store/slices/authSlice.js';
-import { clearLeads } from '../store/slices/leadsSlice.js';
-import Dropdown from './Dropdown';
 
 export default function Navbar() {
-  const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    dispatch(clearLeads());
-  };
   // Desktop properties dropdown state
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -93,29 +82,12 @@ export default function Navbar() {
 
         {/* Right Side Action Button for Desktop */}
         <div className="hidden md:flex items-center z-10">
-          {token ? (
-            <div className="flex items-center gap-3">
-              <a 
-                href="/dashboard" 
-                className="bg-green-50 text-green-700 hover:bg-green-100 px-4 py-2 rounded-xl text-sm font-semibold border border-green-200 transition-colors cursor-pointer"
-              >
-                Dashboard
-              </a>
-              <button 
-                onClick={handleLogout}
-                className="text-gray-600 hover:text-red-500 text-sm font-semibold transition-colors cursor-pointer outline-none"
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <a 
-              href="/login" 
-              className="bg-blue-900 hover:bg-blue-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all duration-200 cursor-pointer flex items-center"
-            >
-              Admin Login
-            </a>
-          )}
+          <a 
+            href="/login" 
+            className="bg-emerald-800 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all duration-200 cursor-pointer flex items-center"
+          >
+            Login
+          </a>
         </div>
 
         {/* Hamburger Button — Changed base color to text-black to match white header theme */}
@@ -151,21 +123,9 @@ export default function Navbar() {
           <a href="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500 transition-colors pb-2 border-b border-orange-100/30">Home</a>
           <a href="/about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500 transition-colors pb-2 border-b border-orange-100/30">About Us</a>
           <a href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500 transition-colors pb-2 border-b border-orange-100/30">Contact Us</a>
-          {token ? (
-            <>
-              <a href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500 transition-colors pb-2 border-b border-orange-100/30">Dashboard</a>
-              <button 
-                onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} 
-                className="hover:text-red-500 text-left transition-colors font-medium cursor-pointer pb-2 outline-none"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <a href="/login" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500 transition-colors font-medium">Admin Login</a>
-          )}
+          <a href="/login" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500 transition-colors font-medium">Login</a>
         </div>
       </div>
     </nav>
   );
-}
+}

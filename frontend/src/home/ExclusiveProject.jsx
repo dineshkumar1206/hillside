@@ -212,7 +212,7 @@ export default function ExclusiveProjects() {
           <h2 className="text-[#0e1726] font-bold text-2xl md:text-[28px] tracking-tight">
             Complete Land Insights - Beyond Just the View
           </h2>
-          <a href="#view-all" className="text-[#2563eb] text-xs font-semibold flex items-center gap-1 hover:underline">
+          <a href="#view-all" className="text-emerald-750 text-xs font-semibold flex items-center gap-1 hover:underline">
             View all 
             <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -245,7 +245,7 @@ export default function ExclusiveProjects() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                   </button>
-                  <button className="hover:text-blue-500 transition-colors">
+                  <button className="hover:text-emerald-600 transition-colors">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                     </svg>
@@ -296,7 +296,7 @@ export default function ExclusiveProjects() {
           </div>
 
           {/* Right Graphical View Column */}
-          <div className="relative lg:col-span-7 bg-[#ebf8ff] min-h-[260px] lg:min-h-full flex items-center justify-center overflow-hidden">
+          <div className="relative lg:col-span-7 bg-emerald-50/30 min-h-[260px] lg:min-h-full flex items-center justify-center overflow-hidden">
             {/* FIX: Replaced the static Unsplash string with dynamic local data mapping */}
             <div className="absolute inset-0 bg-cover bg-center transition-all duration-300 transform scale-105 filter saturate-[1.1]" style={{ backgroundImage: `url('${currentInsight.image}')` }}>
               {/* Overlay Content Block */}
@@ -332,7 +332,7 @@ export default function ExclusiveProjects() {
               <button
                 key={index}
                 onClick={() => setActiveIndex(index)}
-                className={`h-1.5 transition-all duration-300 rounded-full ${activeIndex === index ? 'w-6 bg-[#2563eb]' : 'w-1.5 bg-[#cbd5e0]'}`}
+                className={`h-1.5 transition-all duration-300 rounded-full ${activeIndex === index ? 'w-6 bg-emerald-600' : 'w-1.5 bg-[#cbd5e0]'}`}
               />
             ))}
           </div>

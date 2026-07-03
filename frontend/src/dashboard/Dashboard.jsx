@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { LogOut, Home, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react';
+import { 
+  LogOut, Home, RefreshCw, AlertCircle, CheckCircle, 
+  Plus, Pencil, Trash2, HelpCircle, LayoutDashboard, Globe,
+  Flame, Rocket, Gem, FileText
+} from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { logout } from '../store/slices/authSlice.js';
-import { fetchLeadsAsync, deleteLeadAsync, clearLeads } from '../store/slices/leadsSlice.js';
-import DashboardKPI from './DashboardKPI.jsx';
-import DashboardChart from './DashboardChart.jsx';
-import LeadTable from './LeadTable.jsx';
-import LeadDrawer from './LeadDrawer.jsx';
+
+const POPULAR_ICONS = [
+  'Mountain', 'FileCheck', 'TrendingUp', 'Home', 'Shield', 
+  'MapPin', 'Trees', 'Compass', 'Award', 'Sparkles', 'Heart'
+];
+
+const AMENITIES_LIST = [
+  'Gymnasium', 'Swimming Pool', 'Sports Facility', 'Indoor Games',
+  'Children\'s Play Area', 'Club House', 'Cafeteria', 'Rain Water Harvesting',
+  'Intercom', '24 X 7 Security'
+];
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -15,11 +26,23 @@ export default function Dashboard() {
   
   const token = useSelector(state => state.auth.token);
   const email = useSelector(state => state.auth.email) || 'Admin';
-  const loading = useSelector(state => state.leads.loading);
-  const error = useSelector(state => state.leads.error);
 
-  const [selectedLead, setSelectedLead] = useState(null);
-  const [deleteConfirmLead, setDeleteConfirmLead] = useState(null);
+  // Tab State
+  const [activeTab, setActiveTab] = useState('why_choose'); // 'why_choose' | 'fast_moving' | 'latest_launch' | 'exclusive'
+
+  // WhyChoose CMS state
+  const [cmsItems, setCmsItems] = useState([]);
+  const [cmsLoading, setCmsLoading] = useState(false);
+  const [cmsError, setCmsError] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
+  const [cardDeleteConfirm, setCardDeleteConfirm] = useState(null);
+
+  // Projects CMS state
+  const [projects, setProjects] = useState([]);
+  const [projectLoading, setProjectLoading] = useState(false);
+  const [projectError, setProjectError] = useState(null);
+  const [editingProject, setEditingProject] = useState(null); // stores project template or object
+  const [projectDeleteConfirm, setProjectDeleteConfirm] = useState(null);
 
   // Auto redirect to login page if no auth token is stored
   useEffect(() => {
@@ -27,160 +50,632 @@ export default function Dashboard() {
       navigate('/login');
       return;
     }
-    dispatch(fetchLeadsAsync(token));
-  }, [token, navigate, dispatch]);
-
-  const handleRefresh = () => {
-    if (token) {
-      dispatch(fetchLeadsAsync(token));
+    
+    if (activeTab === 'why_choose') {
+      fetchCmsItems();
+    } else {
+      fetchProjects();
     }
-  };
+  }, [token, navigate, activeTab]);
 
   const handleLogout = () => {
     dispatch(logout());
-    dispatch(clearLeads());
     navigate('/login');
   };
 
-  const handleConfirmDelete = (lead) => {
-    setDeleteConfirmLead(lead);
-  };
-
-  const handleDeleteExecute = () => {
-    if (deleteConfirmLead && token) {
-      dispatch(deleteLeadAsync(deleteConfirmLead.id, token));
-      setDeleteConfirmLead(null);
-      if (selectedLead && selectedLead.id === deleteConfirmLead.id) {
-        setSelectedLead(null);
+  // WhyChoose CMS API calls
+  const fetchCmsItems = async () => {
+    setCmsLoading(true);
+    setCmsError(null);
+    try {
+      const res = await fetch('http://localhost:5000/api/why-choose');
+      if (res.ok) {
+        const data = await res.json();
+        setCmsItems(data);
+      } else {
+        setCmsError('Failed to fetch CMS cards.');
       }
+    } catch (err) {
+      setCmsError('Failed to connect to the server for CMS data.');
+    } finally {
+      setCmsLoading(false);
     }
   };
 
+  const handleSaveCard = async (e) => {
+    e.preventDefault();
+    if (!editingItem.title || !editingItem.description) return;
+
+    const isEdit = !!editingItem.id;
+    const url = isEdit
+      ? `http://localhost:5000/api/why-choose/${editingItem.id}`
+      : 'http://localhost:5000/api/why-choose';
+    const method = isEdit ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: editingItem.title,
+          description: editingItem.description,
+          iconName: editingItem.iconName || 'HelpCircle',
+          sortOrder: parseInt(editingItem.sortOrder || 0, 10)
+        })
+      });
+
+      if (response.ok) {
+        setEditingItem(null);
+        fetchCmsItems();
+      } else {
+        const data = await response.json();
+        alert(data.message || 'Failed to save card.');
+      }
+    } catch (error) {
+      console.error('Error saving card:', error);
+      alert('Error connecting to backend server.');
+    }
+  };
+
+  const handleDeleteCard = async () => {
+    if (!cardDeleteConfirm) return;
+    try {
+      const response = await fetch(`http://localhost:5000/api/why-choose/${cardDeleteConfirm.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        setCardDeleteConfirm(null);
+        fetchCmsItems();
+      } else {
+        const data = await response.json();
+        alert(data.message || 'Failed to delete card.');
+      }
+    } catch (error) {
+      console.error('Error deleting card:', error);
+      alert('Error connecting to backend server.');
+    }
+  };
+
+  // Projects CMS API calls
+  const fetchProjects = async () => {
+    setProjectLoading(true);
+    setProjectError(null);
+    try {
+      const res = await fetch('http://localhost:5000/api/projects');
+      if (res.ok) {
+        const data = await res.json();
+        setProjects(data);
+      } else {
+        setProjectError('Failed to fetch projects.');
+      }
+    } catch (err) {
+      setProjectError('Failed to connect to backend server for projects.');
+    } finally {
+      setProjectLoading(false);
+    }
+  };
+
+  const handleSaveProject = async (e) => {
+    e.preventDefault();
+    if (!editingProject.title || !editingProject.location || !editingProject.routeSubpath) {
+      alert('Title, Location, and Route Subpath are required.');
+      return;
+    }
+
+    const isEdit = !!editingProject.id;
+    const url = isEdit
+      ? `http://localhost:5000/api/projects/${editingProject.id}`
+      : 'http://localhost:5000/api/projects';
+    const method = isEdit ? 'PUT' : 'POST';
+
+    const formData = new FormData();
+    formData.append('type', activeTab);
+    formData.append('title', editingProject.title);
+    formData.append('author', editingProject.author || '');
+    formData.append('location', editingProject.location);
+    formData.append('routeSubpath', editingProject.routeSubpath);
+    formData.append('priceToken', editingProject.priceToken || '');
+    formData.append('status', editingProject.status || 'Ready to Move');
+    formData.append('possessionDate', editingProject.possessionDate || '');
+    formData.append('totalApts', editingProject.totalApts || '');
+    formData.append('launchTimeline', editingProject.launchTimeline || '');
+    formData.append('reraId', editingProject.reraId || '');
+    formData.append('amenities', JSON.stringify(editingProject.amenities || []));
+    formData.append('description', editingProject.description || '');
+
+    if (editingProject.mainImageFile) {
+      formData.append('mainImage', editingProject.mainImageFile);
+    }
+    if (editingProject.galleryFiles) {
+      for (let i = 0; i < editingProject.galleryFiles.length; i++) {
+        formData.append('galleryImages', editingProject.galleryFiles[i]);
+      }
+    }
+
+    setProjectLoading(true);
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        setEditingProject(null);
+        fetchProjects();
+      } else {
+        const data = await response.json();
+        alert(data.message || 'Failed to save project.');
+      }
+    } catch (error) {
+      console.error('Error saving project:', error);
+      alert('Error connecting to backend server.');
+    } finally {
+      setProjectLoading(false);
+    }
+  };
+
+  const handleDeleteProject = async () => {
+    if (!projectDeleteConfirm) return;
+    try {
+      const response = await fetch(`http://localhost:5000/api/projects/${projectDeleteConfirm.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        setProjectDeleteConfirm(null);
+        fetchProjects();
+      } else {
+        const data = await response.json();
+        alert(data.message || 'Failed to delete project.');
+      }
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      alert('Error connecting to backend server.');
+    }
+  };
+
+  const handleAmenityCheckboxChange = (amenityName) => {
+    const currentList = editingProject.amenities || [];
+    const newList = currentList.includes(amenityName)
+      ? currentList.filter(item => item !== amenityName)
+      : [...currentList, amenityName];
+    setEditingProject({ ...editingProject, amenities: newList });
+  };
+
+  // Filter projects by current active tab
+  const filteredProjects = projects.filter(p => p.type === activeTab);
+
+  // Dynamic headers
+  const getTabHeaderTitle = () => {
+    if (activeTab === 'fast_moving') return 'Fast Moving Projects Manager';
+    if (activeTab === 'latest_launch') return 'Latest Launches Manager';
+    if (activeTab === 'exclusive') return 'Exclusive Projects Manager';
+    return 'Why Choose Hillsite? CMS';
+  };
+
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans antialiased">
-      {/* Top Header Section */}
-      <header className="bg-slate-950 border-b border-slate-800 sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="bg-[#7fff00]/10 border border-[#7fff00]/30 rounded-xl p-2 text-[#7fff00]">
-            <Home size={22} />
+    <div className="min-h-screen bg-[#080f0d] text-slate-100 flex font-sans antialiased">
+      
+      {/* ─── LEFT SIDEBAR ─── */}
+      <aside className="w-64 bg-[#0a1411] border-r border-[#142822] flex flex-col justify-between h-screen sticky top-0 shrink-0 z-40">
+        
+        {/* Top Branding Section */}
+        <div>
+          <div className="p-6 border-b border-[#142822] flex items-center gap-3.5">
+            <div className="bg-[#7fff00]/10 border border-[#7fff00]/30 rounded-2xl p-2.5 text-[#7fff00] shadow-md shadow-[#7fff00]/5">
+              <LayoutDashboard size={20} />
+            </div>
+            <div>
+              <h1 className="text-md font-extrabold text-white tracking-wider uppercase">Hillsite</h1>
+              <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mt-0.5">Control Desk</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-white tracking-wide">Hillside</h1>
-            <p className="text-xs text-slate-400">Lead Administration Hub</p>
-          </div>
+
+          {/* Navigation Menus in Sidebar */}
+          <nav className="p-4 space-y-2 mt-4">
+            <button
+              onClick={() => setActiveTab('why_choose')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 text-left outline-none cursor-pointer border ${
+                activeTab === 'why_choose'
+                  ? 'bg-[#11241f] border-[#1b3d33] text-white shadow-md shadow-[#7fff00]/5'
+                  : 'text-slate-400 hover:text-white hover:bg-[#11241f]/20 border-transparent'
+              }`}
+            >
+              <LayoutDashboard size={18} className={activeTab === 'why_choose' ? 'text-[#7fff00]' : ''} />
+              <span>Why Choose CMS</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('fast_moving')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 text-left outline-none cursor-pointer border ${
+                activeTab === 'fast_moving'
+                  ? 'bg-[#11241f] border-[#1b3d33] text-white shadow-md shadow-[#7fff00]/5'
+                  : 'text-slate-400 hover:text-white hover:bg-[#11241f]/20 border-transparent'
+              }`}
+            >
+              <Flame size={18} className={activeTab === 'fast_moving' ? 'text-[#7fff00]' : ''} />
+              <span>Fast Moving Projects</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('latest_launch')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 text-left outline-none cursor-pointer border ${
+                activeTab === 'latest_launch'
+                  ? 'bg-[#11241f] border-[#1b3d33] text-white shadow-md shadow-[#7fff00]/5'
+                  : 'text-slate-400 hover:text-white hover:bg-[#11241f]/20 border-transparent'
+              }`}
+            >
+              <Rocket size={18} className={activeTab === 'latest_launch' ? 'text-[#7fff00]' : ''} />
+              <span>Latest Launches</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('exclusive')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 text-left outline-none cursor-pointer border ${
+                activeTab === 'exclusive'
+                  ? 'bg-[#11241f] border-[#1b3d33] text-white shadow-md shadow-[#7fff00]/5'
+                  : 'text-slate-400 hover:text-white hover:bg-[#11241f]/20 border-transparent'
+              }`}
+            >
+              <Gem size={18} className={activeTab === 'exclusive' ? 'text-[#7fff00]' : ''} />
+              <span>Exclusive Projects</span>
+            </button>
+            
+            <a
+              href="/"
+              className="w-full flex items-center gap-3 text-slate-400 hover:text-white hover:bg-[#11241f]/40 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 text-left outline-none cursor-pointer border border-transparent"
+            >
+              <Globe size={18} />
+              <span>Back to Site</span>
+            </a>
+          </nav>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:flex flex-col items-end">
-            <span className="text-sm font-semibold text-slate-200">{email}</span>
-            <span className="text-[10px] text-green-400 uppercase font-bold tracking-wider">Super Administrator</span>
+        {/* Bottom User Info & Logout */}
+        <div className="p-4 border-t border-[#142822] space-y-4">
+          <div className="flex flex-col px-2">
+            <span className="text-xs font-bold text-white tracking-wide truncate">{email}</span>
+            <span className="text-[9px] text-[#7fff00] uppercase font-bold tracking-widest mt-0.5">Administrator</span>
           </div>
-          <div className="h-8 w-px bg-slate-800 hidden sm:block"></div>
+          
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 bg-red-950/40 hover:bg-red-900/40 text-red-300 border border-red-900/40 px-3.5 py-2 rounded-xl text-sm transition-all duration-200 cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 bg-red-950/20 hover:bg-red-900/30 text-red-300 border border-red-900/30 py-2.5 rounded-xl text-xs font-bold transition-all duration-250 cursor-pointer outline-none active:scale-[0.98]"
           >
-            <LogOut size={16} />
-            <span className="hidden sm:inline">Logout</span>
+            <LogOut size={14} />
+            <span>Sign Out</span>
           </button>
         </div>
-      </header>
+      </aside>
 
-      {/* Main Dashboard body */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+      {/* ─── MAIN CONTENT AREA ─── */}
+      <main className="flex-1 min-h-screen bg-[#080f0d] p-8 md:p-12 overflow-y-auto">
         
-        {/* Metric Header Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        {/* Header Title Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 pb-6 border-b border-[#142822]">
           <div>
-            <h2 className="text-xl font-bold text-white">Leads Overview</h2>
-            <p className="text-sm text-slate-400">Manage real-time buyer inquiries and callback schedules.</p>
+            <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">{getTabHeaderTitle()}</h2>
+            <p className="text-sm text-slate-400 mt-1">
+              {activeTab === 'why_choose' 
+                ? 'Manage the dynamic value proposition cards displayed on the home page.'
+                : `Manage listings published under the ${activeTab.replace('_', ' ')} properties carousel.`
+              }
+            </p>
           </div>
-          <button
-            onClick={handleRefresh}
-            disabled={loading}
-            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-sm transition-all cursor-pointer disabled:opacity-60"
-          >
-            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-            Refresh Data
-          </button>
+          
+          {activeTab === 'why_choose' ? (
+            <button
+              onClick={() => setEditingItem({ title: '', description: '', iconName: 'Mountain', sortOrder: 0 })}
+              className="flex items-center gap-2 bg-[#7fff00] hover:bg-[#6ee600] text-slate-950 px-5 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-[#7fff00]/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
+            >
+              <Plus size={16} />
+              Add New Card
+            </button>
+          ) : (
+            <button
+              onClick={() => setEditingProject({ 
+                title: '', author: '', location: '', routeSubpath: '', priceToken: '', 
+                status: 'Ready to Move', possessionDate: '', totalApts: '', launchTimeline: '', 
+                reraId: '', amenities: [], description: '', mainImageFile: null, galleryFiles: null 
+              })}
+              className="flex items-center gap-2 bg-[#7fff00] hover:bg-[#6ee600] text-slate-950 px-5 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-[#7fff00]/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
+            >
+              <Plus size={16} />
+              Add Listing
+            </button>
+          )}
         </div>
 
-        {/* Global Connection Error notification */}
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-300 rounded-2xl p-4 flex items-start gap-3">
+        {/* Global Connection / Fetch Errors */}
+        {cmsError && (
+          <div className="bg-red-500/10 border border-red-500/30 text-red-300 rounded-2xl p-4 mb-6 flex items-start gap-3">
             <AlertCircle size={20} className="shrink-0 mt-0.5" />
-            <div>
-              <p className="font-semibold">Backend Connection Issue</p>
-              <p className="text-sm mt-0.5 text-red-200/80">{error}</p>
-            </div>
+            <p className="text-sm">{cmsError}</p>
+          </div>
+        )}
+        {projectError && (
+          <div className="bg-red-500/10 border border-red-500/30 text-red-300 rounded-2xl p-4 mb-6 flex items-start gap-3">
+            <AlertCircle size={20} className="shrink-0 mt-0.5" />
+            <p className="text-sm">{projectError}</p>
           </div>
         )}
 
-        {/* KPIs display */}
-        <DashboardKPI />
-
-        {/* Chart + Helper instructions grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <DashboardChart />
-          </div>
-          <div className="bg-slate-950/30 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
-            <div>
-              <h3 className="text-sm font-bold text-white mb-3">System Actions Guideline</h3>
-              <ul className="space-y-3.5 text-xs text-slate-400">
-                <li className="flex gap-2 items-start">
-                  <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full mt-1.5 shrink-0"></span>
-                  <p>Incoming client requests are initially set to <strong className="text-yellow-400 font-medium">New</strong>.</p>
-                </li>
-                <li className="flex gap-2 items-start">
-                  <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-1.5 shrink-0"></span>
-                  <p>Mark leads as contacted by toggling their status to <strong className="text-blue-400 font-medium">Contacted</strong>.</p>
-                </li>
-                <li className="flex gap-2 items-start">
-                  <span className="w-1.5 h-1.5 bg-red-400 rounded-full mt-1.5 shrink-0"></span>
-                  <p>Permanently remove test registrations using the <strong className="text-red-400 font-medium">Delete</strong> trash bin action.</p>
-                </li>
-              </ul>
+        {/* Dynamic Display Area */}
+        {activeTab === 'why_choose' ? (
+          /* Why Choose CMS Tab */
+          cmsLoading ? (
+            <div className="flex items-center justify-center py-40">
+              <RefreshCw size={32} className="animate-spin text-slate-500" />
             </div>
-            <div className="bg-slate-800/30 rounded-xl p-3 border border-slate-800 mt-4 text-[11px] text-[#7fff00] font-semibold flex items-center gap-2">
-              <CheckCircle size={14} />
-              Local Database Synchronized
+          ) : cmsItems.length === 0 ? (
+            <div className="bg-[#0a1411]/20 border border-[#142822] rounded-3xl p-16 text-center shadow-inner">
+              <p className="text-slate-400 font-medium mb-1">No cards found in the database.</p>
+              <p className="text-xs text-slate-500">Seeded cards will load automatically when you reset/sync the database.</p>
             </div>
-          </div>
-        </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {cmsItems.map((item) => {
+                const Icon = LucideIcons[item.iconName] || HelpCircle;
+                return (
+                  <div 
+                    key={item.id}
+                    className="bg-[#0a1411]/50 border border-[#142822] rounded-3xl p-6 flex flex-col justify-between hover:border-[#1e3c33] hover:bg-[#0c1815]/60 hover:shadow-xl hover:shadow-black/25 transition-all duration-300 group relative"
+                  >
+                    <div>
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="bg-[#12231e] text-[#7fff00] border border-[#1f3f35] rounded-2xl p-3 shadow-md group-hover:scale-105 transition-transform duration-300">
+                          <Icon size={22} />
+                        </div>
+                        <span className="text-[10px] bg-[#12231e] text-slate-400 px-3 py-1 rounded-full font-bold border border-[#1f3f35]/50">
+                          Sort Order: {item.sortOrder}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-bold text-white mb-2.5 tracking-tight group-hover:text-[#7fff00] transition-colors duration-300">
+                        {item.title}
+                      </h3>
+                      <p className="text-xs text-slate-450 leading-relaxed line-clamp-4 mb-8 font-normal">
+                        {item.description}
+                      </p>
+                    </div>
 
-        {/* Leads Table listing */}
-        <LeadTable 
-          onInspectLead={(lead) => setSelectedLead(lead)} 
-          onConfirmDelete={handleConfirmDelete} 
-        />
+                    <div className="flex gap-2.5 border-t border-[#142822]/80 pt-4 justify-end">
+                      <button
+                        onClick={() => setEditingItem(item)}
+                        className="flex items-center gap-1.5 bg-[#12231e] hover:bg-[#1a342c] text-slate-200 px-4 py-2 rounded-xl text-xs font-bold border border-[#1d3a31]/55 transition-colors cursor-pointer outline-none"
+                      >
+                        <Pencil size={12} />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => setCardDeleteConfirm(item)}
+                        className="flex items-center gap-1.5 bg-red-950/20 hover:bg-red-900/30 text-red-300 border border-red-900/25 px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer outline-none"
+                      >
+                        <Trash2 size={12} />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )
+        ) : (
+          /* Project Listings CMS Tab (Fast Moving, Latest, Exclusive) */
+          projectLoading ? (
+            <div className="flex items-center justify-center py-40">
+              <RefreshCw size={32} className="animate-spin text-slate-500" />
+            </div>
+          ) : filteredProjects.length === 0 ? (
+            <div className="bg-[#0a1411]/20 border border-[#142822] rounded-3xl p-16 text-center shadow-inner">
+              <p className="text-slate-400 font-medium mb-1">No project listings found for this category.</p>
+              <p className="text-xs text-slate-500">Click "+ Add Listing" to create your first dynamic property listing.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProjects.map((project) => (
+                <div 
+                  key={project.id}
+                  className="bg-[#0a1411]/50 border border-[#142822] rounded-3xl overflow-hidden flex flex-col justify-between hover:border-[#1e3c33] hover:bg-[#0c1815]/60 hover:shadow-xl hover:shadow-black/25 transition-all duration-300 group"
+                >
+                  <div>
+                    {/* Cover image with status badge */}
+                    <div className="relative overflow-hidden h-[190px] bg-slate-950">
+                      <img 
+                        src={project.mainImage || 'https://placehold.co/320x200/e2e8f0/94a3b8?text=Property'} 
+                        alt={project.title}
+                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700 ease-out"
+                        onError={(e) => {
+                          e.target.src = `https://placehold.co/320x200/e2e8f0/94a3b8?text=${encodeURIComponent(project.title)}`;
+                        }}
+                      />
+                      {project.status && (
+                        <span className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm text-[#7fff00] text-[10px] font-bold px-3 py-1.5 rounded-full border border-emerald-950/40">
+                          {project.status}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="p-5 space-y-2.5">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-[11px] text-slate-450 font-semibold truncate">By {project.author || 'Admin'}</span>
+                        <span className="text-[11px] text-emerald-400 font-bold">{project.routeSubpath}</span>
+                      </div>
+                      
+                      <h3 className="text-base font-extrabold text-white leading-snug tracking-tight truncate group-hover:text-[#7fff00] transition-colors duration-300">
+                        {project.title}
+                      </h3>
+                      
+                      <p className="text-xs text-slate-400 flex items-center gap-1">
+                        <span>📍</span> {project.location}
+                      </p>
+                      
+                      <p className="text-[#7fff00] font-black text-base pt-1">
+                        {project.priceToken || 'Price on request'}
+                      </p>
+
+                      {/* Display specs if any */}
+                      {(project.launchTimeline || project.totalApts) && (
+                        <div className="flex items-center gap-2 text-[11px] text-slate-400 pt-1.5 border-t border-[#142822]/60">
+                          {project.launchTimeline && <span>{project.launchTimeline}</span>}
+                          {project.launchTimeline && project.totalApts && <span className="w-px h-2.5 bg-[#142822]"></span>}
+                          {project.totalApts && <span>{project.totalApts}</span>}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2.5 border-t border-[#142822]/80 p-5 pt-4 justify-end bg-slate-950/20">
+                    <button
+                      onClick={() => setEditingProject({ 
+                        ...project, 
+                        amenities: JSON.parse(project.amenities || '[]'),
+                        mainImageFile: null,
+                        galleryFiles: null
+                      })}
+                      className="flex items-center gap-1.5 bg-[#12231e] hover:bg-[#1a342c] text-slate-200 px-4 py-2 rounded-xl text-xs font-bold border border-[#1d3a31]/55 transition-colors cursor-pointer outline-none"
+                    >
+                      <Pencil size={12} />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setProjectDeleteConfirm(project)}
+                      className="flex items-center gap-1.5 bg-red-950/20 hover:bg-red-900/30 text-red-300 border border-red-900/25 px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer outline-none"
+                    >
+                      <Trash2 size={12} />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        )}
       </main>
 
-      {/* Inspect Lead drawer panel */}
-      <LeadDrawer 
-        lead={selectedLead} 
-        onClose={() => setSelectedLead(null)} 
-        onDeleteConfirm={handleConfirmDelete} 
-      />
+      {/* ─── MODAL: CMS ADD/EDIT CARD ─── */}
+      {editingItem && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0a1411] border border-[#1c3d33] rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl relative animate-scale-in max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold text-white mb-5 tracking-tight">
+              {editingItem.id ? 'Edit Content Card' : 'Add Content Card'}
+            </h3>
+            
+            <form onSubmit={handleSaveCard} className="space-y-5">
+              <div>
+                <label className="block text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-widest">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Scenic Hill Views"
+                  value={editingItem.title}
+                  onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })}
+                  className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-2xl px-4 py-3 text-sm focus:border-[#7fff00]/60 outline-none transition-colors"
+                />
+              </div>
 
-      {/* Delete Confirmation Modal Dialog */}
-      {deleteConfirmLead && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full shadow-2xl relative animate-scale-in">
-            <h3 className="text-md font-bold text-white mb-2">Delete Lead Record?</h3>
+              <div>
+                <label className="block text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-widest">
+                  Description
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  placeholder="Describe this feature or value proposition..."
+                  value={editingItem.description}
+                  onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
+                  className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-2xl px-4 py-3 text-sm focus:border-[#7fff00]/60 outline-none transition-colors resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-widest">
+                    Icon Theme
+                  </label>
+                  <select
+                    value={editingItem.iconName}
+                    onChange={(e) => setEditingItem({ ...editingItem, iconName: e.target.value })}
+                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-2xl px-3 py-3 text-sm focus:border-[#7fff00]/60 outline-none transition-colors appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%237fff00%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:0.9rem_0.9rem] bg-[right_1rem_center] bg-no-repeat"
+                  >
+                    {POPULAR_ICONS.map((icon) => (
+                      <option key={icon} value={icon} className="bg-[#0a1411]">{icon}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-widest">
+                    Sort Order
+                  </label>
+                  <input
+                    type="number"
+                    value={editingItem.sortOrder}
+                    onChange={(e) => setEditingItem({ ...editingItem, sortOrder: e.target.value })}
+                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-2xl px-4 py-3 text-sm focus:border-[#7fff00]/60 outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Icon Preview */}
+              <div className="bg-[#060c0a] border border-[#142822] rounded-2xl p-4 flex items-center justify-between">
+                <span className="text-xs text-slate-400 font-medium">Icon Preview:</span>
+                <div className="bg-[#12231e] text-[#7fff00] rounded-xl p-3 border border-[#1f3f35] shadow-inner">
+                  {React.createElement(LucideIcons[editingItem.iconName] || HelpCircle, { size: 24 })}
+                </div>
+              </div>
+
+              <div className="flex gap-3 justify-end pt-4">
+                <button
+                  type="button"
+                  onClick={() => setEditingItem(null)}
+                  className="bg-[#12231e] hover:bg-[#1a342c] text-slate-350 px-5 py-3 rounded-xl text-xs font-bold border border-[#1d3a31]/55 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#7fff00] hover:bg-[#6ee600] text-slate-950 px-6 py-3 rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-md shadow-[#7fff00]/10"
+                >
+                  Save Card
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─── MODAL: DELETE CMS CARD CONFIRMATION ─── */}
+      {cardDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0a1411] border border-red-950/60 rounded-3xl p-6 max-w-sm w-full shadow-2xl relative animate-scale-in">
+            <h3 className="text-md font-bold text-red-400 mb-2.5">Delete Content Card?</h3>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-              Are you sure you want to permanently delete lead record of <strong className="text-slate-200 font-semibold">{deleteConfirmLead.name}</strong>? This database action cannot be undone.
+              Are you sure you want to permanently delete <strong className="text-slate-200 font-semibold">{cardDeleteConfirm.title}</strong>? This card will immediately disappear from the public home page.
             </p>
+            
             <div className="flex gap-3 justify-end">
               <button
-                onClick={() => setDeleteConfirmLead(null)}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs cursor-pointer transition-colors"
+                onClick={() => setCardDeleteConfirm(null)}
+                className="bg-[#12231e] hover:bg-[#1a342c] text-slate-355 px-4 py-2 rounded-xl text-xs font-bold border border-[#1d3a31]/50 cursor-pointer"
               >
                 Cancel
               </button>
               <button
-                onClick={handleDeleteExecute}
-                className="bg-red-600 hover:bg-red-500 text-white px-5 py-2 rounded-xl text-xs cursor-pointer transition-colors font-bold"
+                onClick={handleDeleteCard}
+                className="bg-red-650 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer"
               >
                 Confirm Delete
               </button>
@@ -188,6 +683,300 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* ─── MODAL: MODIFY DYNAMIC LISTING & CONTENT ─── */}
+      {editingProject && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0a1411] border border-[#1c3d33] rounded-3xl p-6 md:p-8 max-w-2xl w-full shadow-2xl relative animate-scale-in max-h-[90vh] overflow-y-auto scrollbar-thin">
+            <h3 className="text-xl font-bold text-white mb-6 tracking-tight border-b border-[#142822] pb-4">
+              Modify Dynamic Listing & Content
+            </h3>
+            
+            <form onSubmit={handleSaveProject} className="space-y-6">
+              
+              {/* Row 1: Title and Author */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] text-slate-450 font-bold mb-1.5 uppercase tracking-wider">
+                    Project Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Scenic Valley Plots"
+                    value={editingProject.title}
+                    onChange={(e) => setEditingProject({ ...editingProject, title: e.target.value })}
+                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-4 py-2.5 text-xs focus:border-[#7fff00]/60 outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-slate-450 font-bold mb-1.5 uppercase tracking-wider">
+                    Developer / Author
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Hillsite Developers"
+                    value={editingProject.author}
+                    onChange={(e) => setEditingProject({ ...editingProject, author: e.target.value })}
+                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-4 py-2.5 text-xs focus:border-[#7fff00]/60 outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Location and Route Subpath */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] text-slate-450 font-bold mb-1.5 uppercase tracking-wider">
+                    Location *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Yelagiri Hills"
+                    value={editingProject.location}
+                    onChange={(e) => setEditingProject({ ...editingProject, location: e.target.value })}
+                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-4 py-2.5 text-xs focus:border-[#7fff00]/60 outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-slate-450 font-bold mb-1.5 uppercase tracking-wider">
+                    Route Subpath (verbatim) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. /scenic-valley"
+                    value={editingProject.routeSubpath}
+                    onChange={(e) => setEditingProject({ ...editingProject, routeSubpath: e.target.value })}
+                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-4 py-2.5 text-xs focus:border-[#7fff00]/60 outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Row 3: Pricing and Status */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] text-slate-450 font-bold mb-1.5 uppercase tracking-wider">
+                    Pricing / Description Token
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 25.Cr or 45 L Onwards"
+                    value={editingProject.priceToken}
+                    onChange={(e) => setEditingProject({ ...editingProject, priceToken: e.target.value })}
+                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-4 py-2.5 text-xs focus:border-[#7fff00]/60 outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-slate-450 font-bold mb-1.5 uppercase tracking-wider">
+                    Status Target
+                  </label>
+                  <select
+                    value={editingProject.status}
+                    onChange={(e) => setEditingProject({ ...editingProject, status: e.target.value })}
+                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-3 py-2.5 text-xs focus:border-[#7fff00]/60 outline-none transition-colors appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%237fff00%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:0.9rem_0.9rem] bg-[right_1rem_center] bg-no-repeat"
+                  >
+                    <option value="Ready to Move" className="bg-[#0a1411]">Ready to Move</option>
+                    <option value="Under Construction" className="bg-[#0a1411]">Under Construction</option>
+                    <option value="New Launch" className="bg-[#0a1411]">New Launch</option>
+                    <option value="Assisted" className="bg-[#0a1411]">Assisted</option>
+                    <option value="Verified" className="bg-[#0a1411]">Verified</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Section B: Overview Fields */}
+              <div className="border-t border-[#142822]/80 pt-4">
+                <h4 className="text-xs font-bold text-emerald-450 uppercase tracking-widest mb-3.5">
+                  Section B: Overview Page Target Fields (Centreparkcontent)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-[9px] text-slate-450 font-bold mb-1 uppercase tracking-wider">
+                      Possession Date String
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Nov'19 or Immediate"
+                      value={editingProject.possessionDate}
+                      onChange={(e) => setEditingProject({ ...editingProject, possessionDate: e.target.value })}
+                      className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-3 py-2 text-xs focus:border-[#7fff00]/60 outline-none transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[9px] text-slate-450 font-bold mb-1 uppercase tracking-wider">
+                      Total Launched Apts / Area
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 2500 or 1200 sq ft"
+                      value={editingProject.totalApts}
+                      onChange={(e) => setEditingProject({ ...editingProject, totalApts: e.target.value })}
+                      className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-3 py-2 text-xs focus:border-[#7fff00]/60 outline-none transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[9px] text-slate-450 font-bold mb-1 uppercase tracking-wider">
+                      Launch Timeline / Config
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Feb'17 or 2,3 BHK"
+                      value={editingProject.launchTimeline}
+                      onChange={(e) => setEditingProject({ ...editingProject, launchTimeline: e.target.value })}
+                      className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-3 py-2 text-xs focus:border-[#7fff00]/60 outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+                
+                <div className="mt-4">
+                  <label className="block text-[9px] text-slate-450 font-bold mb-1 uppercase tracking-wider">
+                    RERA ID Registry Numbers
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. P51700000506, P51700000596"
+                    value={editingProject.reraId}
+                    onChange={(e) => setEditingProject({ ...editingProject, reraId: e.target.value })}
+                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-4 py-2.5 text-xs focus:border-[#7fff00]/60 outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Amenities Checkboxes */}
+              <div className="border-t border-[#142822]/80 pt-4">
+                <label className="block text-[10px] text-slate-450 font-bold mb-2.5 uppercase tracking-widest">
+                  Select Available Amenities
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {AMENITIES_LIST.map((amenity) => (
+                    <label 
+                      key={amenity} 
+                      className="flex items-center gap-2 text-xs text-slate-350 cursor-pointer select-none"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={(editingProject.amenities || []).includes(amenity)}
+                        onChange={() => handleAmenityCheckboxChange(amenity)}
+                        className="w-4 h-4 rounded border-[#1b3d33] bg-[#060c0a] text-[#7fff00] focus:ring-0 cursor-pointer accent-[#7fff00]"
+                      />
+                      <span>{amenity}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Detailed Description Block */}
+              <div className="border-t border-[#142822]/80 pt-4">
+                <label className="block text-[10px] text-slate-450 font-bold mb-1.5 uppercase tracking-wider">
+                  Detailed Description Block
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Enter detailed description block content..."
+                  value={editingProject.description}
+                  onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })}
+                  className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-xl px-4 py-3 text-xs focus:border-[#7fff00]/60 outline-none transition-colors resize-none"
+                />
+              </div>
+
+              {/* Cover Image and Gallery Image Upload */}
+              <div className="border-t border-[#142822]/80 pt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] text-slate-450 font-bold mb-1.5 uppercase tracking-wider">
+                    Main Cover Image *
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setEditingProject({ ...editingProject, mainImageFile: e.target.files[0] })}
+                    className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border file:border-[#1b3d33] file:text-xs file:font-bold file:bg-[#12231e] file:text-white hover:file:bg-[#1a342c] file:cursor-pointer"
+                  />
+                  {editingProject.mainImage && !editingProject.mainImageFile && (
+                    <div className="mt-2 text-[10px] text-emerald-400 flex items-center gap-1.5 truncate">
+                      <span>Current:</span>
+                      <a href={editingProject.mainImage} target="_blank" rel="noreferrer" className="underline truncate">
+                        {editingProject.mainImage}
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-slate-450 font-bold mb-1.5 uppercase tracking-wider">
+                    Gallery Images
+                  </label>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => setEditingProject({ ...editingProject, galleryFiles: e.target.files })}
+                    className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border file:border-[#1b3d33] file:text-xs file:font-bold file:bg-[#12231e] file:text-white hover:file:bg-[#1a342c] file:cursor-pointer"
+                  />
+                  {editingProject.galleryImages && !editingProject.galleryFiles && (
+                    <div className="mt-2 text-[10px] text-slate-450 truncate">
+                      Gallery size: {JSON.parse(editingProject.galleryImages || '[]').length} images
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 justify-end pt-6 border-t border-[#142822] mt-4">
+                <button
+                  type="button"
+                  onClick={() => setEditingProject(null)}
+                  className="bg-[#12231e] hover:bg-[#1a342c] text-slate-350 px-5 py-3 rounded-xl text-xs font-bold border border-[#1d3a31]/55 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={projectLoading}
+                  className="bg-[#7fff00] hover:bg-[#6ee600] disabled:bg-slate-800 disabled:text-slate-500 text-slate-950 px-6 py-3 rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-md shadow-[#7fff00]/10 flex items-center gap-2"
+                >
+                  {projectLoading ? (
+                    <>
+                      <RefreshCw size={12} className="animate-spin" /> Saving Listing...
+                    </>
+                  ) : (
+                    'Save Card'
+                  )}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─── MODAL: DELETE PROJECT LISTING CONFIRMATION ─── */}
+      {projectDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0a1411] border border-red-950/60 rounded-3xl p-6 max-w-sm w-full shadow-2xl relative animate-scale-in">
+            <h3 className="text-md font-bold text-red-400 mb-2.5">Delete Project Listing?</h3>
+            <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+              Are you sure you want to permanently delete the listing <strong className="text-slate-200 font-semibold">{projectDeleteConfirm.title}</strong>? This property listing will immediately disappear from the public home page.
+            </p>
+            
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setProjectDeleteConfirm(null)}
+                className="bg-[#12231e] hover:bg-[#1a342c] text-slate-350 px-4 py-2 rounded-xl text-xs font-bold border border-[#1d3a31]/50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteProject}
+                className="bg-red-650 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+              >
+                Confirm Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

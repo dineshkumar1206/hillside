@@ -1,46 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// ─── Project Data ─────────────────────────────────────────────────────────────
-const projects = [
+// ─── Default Fallback Project Data ───────────────────────────────────────────
+const DEFAULT_PROJECTS = [
   {
     id: 1,
-    name: 'Godrej Varanya',
-    route: '/centre-park',
-    location: 'Dombivali',
-    price: '45.49 L Onwards',
-    configuration: '1, 2, 3 BHK',
-    builtupArea: '453 - 884 sq ft',
+    name: 'Today Citadel Juinagar',
+    route: '/purva-panorama',
+    location: 'Yelagiri Hills',
+    price: '₹ 1.80 Cr Onwards',
+    configuration: 'Feb 2025',
+    builtupArea: '10 plots',
     images: [
       '/images/Centre-Park.jpg',
     ],
-  },
-  {
-    id: 2,
-    name: 'Today - Citadel Juinagar',
-    route: '/purva-panorama',
-    location: 'Thane, Mumbai',
-    price: '1.80 Cr Onwards',
-    configuration: '2, 3 BHK',
-    builtupArea: '716 - 1060 sq ft',
-    images: [
-      '/images/Purva-Panorama.jpeg',
-    ],
-  },
-  {
-    id: 3,
-    name: 'L&T -Thane evara',
-    route: '/purva-panorama',
-    location: 'Thane West',
-    price: '1.15 Cr Onwards',
-    configuration: '2 BHK',
-    builtupArea: '662 sq ft',
-    images: [
-      '/images/West-county.jpg',
-    ],
-  },
+  }
 ];
 
 // ─── Single Project Card ──────────────────────────────────────────────────────
@@ -49,7 +25,7 @@ function ProjectCard({ project }) {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col md:flex-row">
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col md:flex-row text-left">
 
       {/* ── Left: Info Panel ── */}
       <div className="flex flex-col justify-between p-6 md:p-8 md:w-[42%] flex-shrink-0">
@@ -77,22 +53,22 @@ function ProjectCard({ project }) {
               </button>
             </div>
           </div>
-          <p className="text-gray-500 text-[14px] mb-6">{project.location}</p>
+          <p className="text-gray-500 text-[14px] mb-6">📍 {project.location}</p>
 
           {/* Price */}
-          <p className="text-orange-500 font-bold text-[20px] md:text-[22px] mb-6">
+          <p className="text-emerald-700 font-bold text-[20px] md:text-[22px] mb-6">
             {project.price}
           </p>
 
           {/* Config + Area */}
           <div className="flex items-stretch gap-0 mb-8">
             <div className="pr-5">
-              <p className="text-gray-400 text-[12px] mb-1">Configuration</p>
+              <p className="text-gray-400 text-[12px] mb-1">Timeline/Config</p>
               <p className="text-gray-900 font-semibold text-[15px]">{project.configuration}</p>
             </div>
             <div className="w-px bg-gray-200 mx-1" />
             <div className="pl-5">
-              <p className="text-gray-400 text-[12px] mb-1">Builtup area</p>
+              <p className="text-gray-400 text-[12px] mb-1">Area/Plots</p>
               <p className="text-gray-900 font-semibold text-[15px]">{project.builtupArea}</p>
             </div>
           </div>
@@ -100,28 +76,29 @@ function ProjectCard({ project }) {
 
         {/* Bottom: CTA Buttons */}
         <div className="flex items-center gap-4">
-          <button className="text-gray-700 font-semibold text-[14px] hover:text-blue-600 transition-colors">
+          <button className="text-gray-750 font-semibold text-[14px] hover:text-emerald-600 transition-colors">
             Contact Us
           </button>
           <button 
-           onClick={() => {
-                 navigate(project.route);
-                 window.scrollTo({
-                   top: 0,
-                   behavior: "smooth",
-                 });
-               }}
-          className="bg-[#1a2c5b] hover:bg-[#162348] text-white font-semibold text-[14px] px-6 py-3 rounded-full cursor-pointer transition-colors duration-200">
+            onClick={() => {
+              navigate(project.route);
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
+            }}
+            className="bg-emerald-800 hover:bg-emerald-700 text-white font-semibold text-[14px] px-6 py-3 rounded-full cursor-pointer transition-colors duration-200"
+          >
             Explore now
           </button>
         </div>
       </div>
 
       {/* ── Right: Image Panel ── */}
-      <div className="relative flex-1 min-h-[220px] md:min-h-0 overflow-hidden">
+      <div className="relative flex-1 min-h-[220px] md:min-h-0 overflow-hidden bg-slate-155">
         {/* Main image */}
         <img
-          src={project.images[0]}
+          src={project.images[0] || 'https://placehold.co/800x480/cbd5e1/64748b?text=Property'}
           alt={`${project.name} view`}
           className="w-full h-full object-cover"
           style={{ minHeight: '220px' }}
@@ -137,9 +114,42 @@ function ProjectCard({ project }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function ExclusiveProjects() {
   const [current, setCurrent] = useState(0);
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjectsList = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/projects');
+        if (res.ok) {
+          const data = await res.json();
+          const filtered = data
+            .filter(p => p.type === 'exclusive')
+            .map(p => ({
+              id: p.id,
+              name: p.title,
+              route: p.routeSubpath,
+              location: p.location,
+              price: p.priceToken || 'Price on request',
+              configuration: p.launchTimeline || 'Immediate',
+              builtupArea: p.totalApts || 'Area on request',
+              images: [p.mainImage]
+            }));
+          setProjects(filtered.length > 0 ? filtered : DEFAULT_PROJECTS);
+        } else {
+          setProjects(DEFAULT_PROJECTS);
+        }
+      } catch (error) {
+        console.error('Error fetching exclusive projects:', error);
+        setProjects(DEFAULT_PROJECTS);
+      }
+    };
+    fetchProjectsList();
+  }, []);
 
   const prev = () => setCurrent((p) => (p - 1 + projects.length) % projects.length);
   const next = () => setCurrent((p) => (p + 1) % projects.length);
+
+  if (projects.length === 0) return null;
 
   return (
     <motion.section 
@@ -172,7 +182,7 @@ export default function ExclusiveProjects() {
           </h2>
           <a
             href="#"
-            className="flex items-center gap-1 text-blue-600 text-[14px] font-medium hover:underline"
+            className="flex items-center gap-1 text-emerald-700 text-[14px] font-medium hover:underline"
           >
             View all
             <ChevronRight size={16} strokeWidth={2.5} />
@@ -212,7 +222,7 @@ export default function ExclusiveProjects() {
           >
             <button
               onClick={prev}
-              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-blue-500 hover:text-blue-600 transition-colors bg-white shadow-sm"
+              className="w-8 h-8 rounded-full border border-gray-305 flex items-center justify-center hover:border-emerald-500 hover:text-emerald-600 transition-colors bg-white shadow-sm"
             >
               <ChevronLeft size={16} strokeWidth={2.5} />
             </button>
@@ -223,7 +233,7 @@ export default function ExclusiveProjects() {
                   key={i}
                   onClick={() => setCurrent(i)}
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    current === i ? 'w-6 bg-blue-600' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                    current === i ? 'w-6 bg-emerald-600' : 'w-2 bg-gray-300 hover:bg-gray-400'
                   }`}
                 />
               ))}
@@ -231,7 +241,7 @@ export default function ExclusiveProjects() {
 
             <button
               onClick={next}
-              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-blue-500 hover:text-blue-600 transition-colors bg-white shadow-sm"
+              className="w-8 h-8 rounded-full border border-gray-305 flex items-center justify-center hover:border-emerald-500 hover:text-emerald-600 transition-colors bg-white shadow-sm"
             >
               <ChevronRight size={16} strokeWidth={2.5} />
             </button>

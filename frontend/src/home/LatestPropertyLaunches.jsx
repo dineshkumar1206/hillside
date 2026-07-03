@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-// ─── Sample Data (Updated for Yelagiri) ──────────────────────────────────────
-const projects = [
+// ─── Seeded Fallback Property Data (Updated for Yelagiri) ────────────────────
+const DEFAULT_PROJECTS = [
   {
     id: 1,
     image: '/hillside/img-2.jpeg',
@@ -12,7 +12,6 @@ const projects = [
     title: 'Athanavur, Yelagiri',
     location: 'Yelagiri',
     price: '₹1.18 Cr Onward',
-    priceColor: 'text-orange-500',
     config: '2,3,4 BHK Apartment',
     area: '785 - 1796 sq ft',
     builder: 'By L And T Realty',
@@ -25,7 +24,6 @@ const projects = [
     title: 'Mangalam, Yelagiri',
     location: 'Yelagiri',
     price: '₹ 9.61 Cr Onwards',
-    priceColor: 'text-orange-500',
     config: '3,4,5 BHK Apartment',
     area: 'Area on request',
     builder: 'Rustomjee Builders',
@@ -38,68 +36,16 @@ const projects = [
     title: 'Punganoor, Yelagiri',
     location: 'Yelagiri',
     price: '₹2.30 Cr Onwards',
-    priceColor: 'text-orange-500',
     config: '2,3 BHK Apartment',
     area: '646 - 1089 sq ft',
     builder: 'By Godrej Properties',
-  },
-  {
-    id: 4,
-    image: '/hillside/img-5.jpeg',
-    route: '/hubtown-seasons-ecuador',
-    status: 'Ready to Move',
-    title: 'Kottaiyur, Yelagiri',
-    location: 'Yelagiri',
-    price: '₹1.75 Cr Onwards',
-    priceColor: 'text-orange-500',
-    config: '2,3 BHK Apartment',
-    area: '750 - 1165 sq ft',
-    builder: 'By Tata Realty',
-  },
-  {
-    id: 5,
-    image: '/hillside/img-6.jpeg',
-    route: '/hubtown-seasons-ecuador',
-    status: 'Under Construction',
-    title: 'Nilavoor, Yelagiri',
-    location: 'Yelagiri East',
-    price: '₹2.59 Cr Onwards',
-    priceColor: 'text-orange-500',
-    config: '1 BHK Apartment',
-    area: '800 - 2200 sq ft',
-    builder: 'By L And T Realty',
-  },
-  {
-    id: 6,
-    image: '/hillside/img-7.jpeg',
-    route: '/hubtown-seasons-ecuador',
-    status: 'Ready to Move',
-    title: 'Boathouse Road, Yelagiri',
-    location: 'Yelagiri',
-    price: '₹ 6.32 Cr Onwards',
-    priceColor: 'text-orange-500',
-    config: '3,4,5 BHK Apartment',
-    area: 'Area on request',
-    builder: 'By Kalpataru Group',
-  },
-  {
-    id: 7,
-    image: '/hillside/img-8.jpeg',
-    route: '/hubtown-seasons-ecuador',
-    status: 'Ready to Move',
-    title: 'Yelagiri West',
-    location: 'Yelagiri Hills, Vellore',
-    price: 'Price on request',
-    priceColor: 'text-orange-500',
-    config: '1,2 BHK Apartment',
-    area: 'Area on request',
-    builder: 'By Dosti Realty',
   }
 ];
 
 // ─── Status Icon ─────────────────────────────────────────────────────────────
 function StatusIcon({ status }) {
   const isReady = status === 'Ready to Move';
+
   return (
     <span className="flex items-center gap-1.5 bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium px-3 py-1.5 rounded-full">
       {isReady ? (
@@ -127,18 +73,18 @@ function PropertyCard({ project }) {
   const navigate = useNavigate();
 
   return (
-    <div
-       onClick={() => {
+    <div 
+      onClick={() => {
         navigate(project.route);
         window.scrollTo({
           top: 0,
           behavior: "smooth",
         });
       }}
-     className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px] bg-white cursor-pointer rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
-      
+      className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px] bg-white cursor-pointer rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group"
+    >
       {/* Image */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden bg-slate-100">
         <img
           src={project.image}
           alt={project.title}
@@ -172,22 +118,31 @@ function PropertyCard({ project }) {
             </svg>
           </button>
         </div>
+
+        {/* Status Badge */}
+        {project.status && (
+          <div className="absolute bottom-3 left-3">
+            <StatusIcon status={project.status} />
+          </div>
+        )}
       </div>
 
       {/* Card Body */}
-      <div className="p-4 space-y-1.5">
-        <h3 className="font-semibold text-gray-900 text-[15px] leading-snug line-clamp-1">
+      <div className="p-4 space-y-1.5 text-left">
+        <h3 className="font-bold text-gray-905 text-[15px] leading-snug line-clamp-1">
           {project.title}
         </h3>
-        <p className="text-gray-500 text-[13px]">{project.location}</p>
-        <p className={`font-bold text-[15px] ${project.priceColor}`}>{project.price}</p>
+        <p className="text-gray-500 text-[13px]">📍 {project.location}</p>
+        <p className="font-bold text-[15px] text-emerald-700">{project.price}</p>
 
         {/* Config + Area */}
-        <div className="flex items-center gap-2 text-[12px] text-gray-500 pt-0.5">
-          <span>{project.config}</span>
-          <span className="w-px h-3 bg-gray-300"></span>
-          <span>{project.area}</span>
-        </div>
+        {(project.config || project.area) && (
+          <div className="flex items-center gap-2 text-[12px] text-gray-500 pt-0.5">
+            {project.config && <span>{project.config}</span>}
+            {project.config && project.area && <span className="w-px h-3 bg-gray-350"></span>}
+            {project.area && <span>{project.area}</span>}
+          </div>
+        )}
 
         {/* Builder */}
         <p className="text-[12px] text-gray-400 pt-0.5">By {project.builder}</p>
@@ -205,7 +160,7 @@ function ArrowButton({ direction, onClick, disabled }) {
       className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200
         ${disabled
           ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-white'
-          : 'border-gray-300 text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 bg-white shadow-sm'
+          : 'border-gray-300 text-gray-600 hover:border-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 bg-white shadow-sm'
         }`}
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -220,7 +175,39 @@ export default function LatestPropertyLaunches() {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjectsList = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/projects');
+        if (res.ok) {
+          const data = await res.json();
+          const filtered = data
+            .filter(p => p.type === 'latest_launch')
+            .map(p => ({
+              id: p.id,
+              image: p.mainImage,
+              title: p.title,
+              location: p.location,
+              price: p.priceToken || 'Price on request',
+              status: p.status,
+              config: p.launchTimeline,
+              area: p.totalApts,
+              builder: p.author || 'Admin',
+              route: p.routeSubpath
+            }));
+          setProjects(filtered.length > 0 ? filtered : DEFAULT_PROJECTS);
+        } else {
+          setProjects(DEFAULT_PROJECTS);
+        }
+      } catch (error) {
+        console.error('Error fetching latest launches:', error);
+        setProjects(DEFAULT_PROJECTS);
+      }
+    };
+    fetchProjectsList();
+  }, []);
 
   const checkScroll = () => {
     const el = scrollRef.current;
@@ -239,30 +226,7 @@ export default function LatestPropertyLaunches() {
       el.removeEventListener('scroll', checkScroll);
       window.removeEventListener('resize', checkScroll);
     };
-  }, []);
-
-  // ─── Added Auto Scroll Logic ───────────────────────────────────────────────
-  useEffect(() => {
-    // Don't auto-scroll if the user is hovering over the carousel track
-    if (isHovered) return;
-
-    const interval = setInterval(() => {
-      const el = scrollRef.current;
-      if (!el) return;
-
-      const cardWidth = el.querySelector('[class*="flex-shrink-0"]')?.offsetWidth || 300;
-      const scrollAmount = cardWidth + 16; // card width + gap parameter
-
-      // If we are at the end of the carousel, loop back to the start
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      }
-    }, 2500); // 2.5 seconds configuration
-
-    return () => clearInterval(interval);
-  }, [isHovered]);
+  }, [projects]);
 
   const scroll = (dir) => {
     const el = scrollRef.current;
@@ -304,7 +268,7 @@ export default function LatestPropertyLaunches() {
           <div className="flex items-center gap-3">
             <a
               href="#"
-              className="hidden sm:flex items-center gap-1 text-blue-600 text-sm font-medium hover:underline"
+              className="hidden sm:flex items-center gap-1 text-emerald-700 text-sm font-medium hover:underline"
             >
               View all
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -319,7 +283,7 @@ export default function LatestPropertyLaunches() {
           </div>
         </motion.div>
 
-        {/* Carousel Track with Hover Listeners */}
+        {/* Carousel Track */}
         <motion.div
           variants={{
             hidden: { opacity: 0, y: 40 },
@@ -327,8 +291,6 @@ export default function LatestPropertyLaunches() {
           }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           ref={scrollRef}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
           className="flex gap-4 overflow-x-auto scroll-smooth pb-3 hide-scrollbar"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
@@ -349,7 +311,7 @@ export default function LatestPropertyLaunches() {
         >
           <a
             href="#"
-            className="flex items-center gap-1 text-blue-600 text-sm font-medium border border-blue-200 rounded-full px-5 py-2 hover:bg-blue-50 transition-colors"
+            className="flex items-center gap-1 text-emerald-750 text-sm font-medium border border-emerald-250 rounded-full px-5 py-2 hover:bg-emerald-50 transition-colors"
           >
             View all projects
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

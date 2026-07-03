@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import Container from '../components/Container';
 import HomeFrom from '../forms/HomeFrom'; 
 
@@ -15,50 +16,52 @@ export default function Hero() {
       {/* Subtle overlay to guarantee clean text contrast across varying viewport sizes */}
       <div className="absolute inset-0 bg-black/15 pointer-events-none" />
       
-      <Container className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
+      <Container className="relative z-10 w-full">
         
-        {/* Left Content Column */}
-        <div className="space-y-5 lg:col-span-7 order-1 flex flex-col justify-center text-white">
+        {/* Left Content Column with reveal animation */}
+        <motion.div 
+          initial={{ opacity: 0, x: -40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="space-y-6 max-w-3xl text-left text-white"
+        >
           
-          {/* Logo Placed Above Content */}
-          {/* <div className="select-none animate-fade-in">
-            <img 
-              src="/hillside/Hillsite-Favicon.webp" 
-              alt="Hillsite Logo" 
-              className="w-20 md:w-28 h-auto object-contain drop-shadow-md"
-              loading="eager"
-            />
-          </div> */}
-
           {/* Core Brand & Typography Stack */}
           <div className="space-y-3">
-            {/* Reduced Title Sizes and Font-Weights */}
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight drop-shadow-md">
+            <motion.h2 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.6 }}
+              className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight drop-shadow-md text-[#7fff00]"
+            >
               Hillsite
-            </h2>
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-bold leading-snug tracking-normal drop-shadow-md">
+            </motion.h2>
+            <motion.h1 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold leading-snug tracking-normal drop-shadow-md"
+            >
               Invest in Nature. Live Beyond Walls.
-            </h1>
+            </motion.h1>
           </div>
 
-          {/* Frosted Glass Information Card Block */}
-          <div className="w-full max-w-2xl bg-black/35 backdrop-blur-md border border-white/10 rounded-xl p-5 md:p-6 text-white/90 space-y-3.5 shadow-xl">
-            <p className="text-xs sm:text-sm font-normal leading-relaxed text-gray-100">
+          {/* Frosted Glass Information Card Block with separate fade-in */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="w-full bg-black/35 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:p-8 text-white/95 space-y-4 shadow-xl"
+          >
+            <p className="text-sm md:text-base font-normal leading-relaxed text-gray-100">
               At Hillsite, we offer exclusive land in the tranquil beauty of Yelagiri Hills, handpicked for their scenic views, privacy, and connection to nature.
             </p>
-            <p className="text-xs sm:text-sm font-normal leading-relaxed text-gray-100">
+            <p className="text-sm md:text-base font-normal leading-relaxed text-gray-100">
               Perfect for luxury homes, retreats, or eco-conscious investments, each plot is selected for its landscape value and long-term potential. Our team ensures clear documentation, discreet site visits, and personalized service for refined buyers seeking more than just land — a legacy.
             </p>
-          </div>
+          </motion.div>
           
-        </div>
-
-        {/* Right Column: HomeForm Component */}
-        <div className="lg:col-span-5 order-2 flex justify-center lg:justify-end w-full">
-          <div className="w-full max-w-md lg:max-w-full">
-            <HomeFrom />
-          </div>
-        </div>
+        </motion.div>
 
       </Container>
     </section>

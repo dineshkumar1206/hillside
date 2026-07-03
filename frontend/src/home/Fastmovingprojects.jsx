@@ -2,14 +2,19 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-// ─── Updated Feature Data ───────────────────────────────────────────────────
-const projects = [
+// ─── Seeded Fallback Feature Data ────────────────────────────────────────────
+const DEFAULT_PROJECTS = [
   {
     id: 1,
     image: '/hillside/Scenic-View.webp',
     route: '/hubtown-seasons-ecuador',
+    status: 'Verified',
     title: 'Handpicked Scenic Plots',
-    description: 'We specialize in premium land parcels located amidst breathtaking natural surroundings. From panoramic hill views to lush green landscapes, every plot is carefully chosen to offer both aesthetic appeal and long-term investment value.',
+    location: 'Yelagiri Hills',
+    price: '₹ 25 L Onwards',
+    config: 'Jan 2026',
+    area: '50 Plots',
+    builder: 'Hillsite Developers',
   },
   {
     id: 2,
@@ -17,7 +22,11 @@ const projects = [
     route: '/hubtown-seasons-ecuador',
     status: 'Verified',
     title: 'Verified Ownership Documents',
-    description: 'Every property listed with Hillsite undergoes thorough verification to ensure clear ownership, authentic documentation, and complete legal compliance. This gives buyers confidence and eliminates the risk of future disputes.',
+    location: 'Yelagiri Hills',
+    price: 'Price on request',
+    config: 'Feb 2026',
+    area: '10 Plots',
+    builder: 'Hillsite Developers',
   },
   {
     id: 3,
@@ -25,33 +34,38 @@ const projects = [
     route: '/hubtown-seasons-ecuador',
     status: 'Direct Access',
     title: 'Direct Access to Verified Landowners',
-    description: 'We connect buyers directly with genuine landowners and authorized sellers, ensuring transparency throughout the transaction process. This approach promotes fair pricing, trust, and a smoother buying experience.',
-  },
-  {
-    id: 4,
-    image: '/hillside/Infrastructure-Clarity.webp',
-    route: '/hubtown-seasons-ecuador',
-    status: 'Verified',
-    title: 'Clear Infrastructure Insights',
-    description: 'Before making a purchase, buyers receive detailed information about road connectivity, water availability, terrain conditions, electricity access, and nearby amenities, helping them make informed decisions.',
-  },
-  {
-    id: 5,
-    image: '/hillside/Legal-Registration-Support.webp',
-    route: '/hubtown-seasons-ecuador',
-    status: 'Assisted',
-    title: 'Legal & Registration Support',
-    description: 'Our team provides comprehensive assistance with legal procedures, documentation, and property registration. We handle the complexities of the process so you can focus on planning your investment with confidence.',
-  },
-  {
-    id: 6,
-    image: '/hillside/After-Sales-Service.webp',
-    route: '/hubtown-seasons-ecuador',
-    status: 'Support Active',
-    title: 'After-Sale Service',
-    description: "Our commitment doesn't end with the purchase. Whether you need assistance with fencing, borewell installation, land development, maintenance, or local contacts, we continue to support you even after the transaction is complete.",
+    location: 'Yelagiri Hills',
+    price: 'Price on request',
+    config: 'Mar 2026',
+    area: '15 Plots',
+    builder: 'Hillsite Developers',
   }
 ];
+
+// ─── Status Icon ─────────────────────────────────────────────────────────────
+function StatusIcon({ status }) {
+  const isReady = status === 'Ready to Move' || status === 'Verified';
+
+  return (
+    <span className="flex items-center gap-1.5 bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium px-3 py-1.5 rounded-full">
+      {isReady ? (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="7.5" cy="15.5" r="5.5"/>
+          <path d="m21 2-9.6 9.6"/>
+          <path d="m15.5 7.5 3 3L22 7l-3-3"/>
+        </svg>
+      ) : (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 20h20"/>
+          <path d="M10 20V8l8-4v16"/>
+          <path d="M6 20v-4"/>
+          <rect x="14" y="14" width="2" height="6"/>
+        </svg>
+      )}
+      {status}
+    </span>
+  );
+}
 
 // ─── Property Card ────────────────────────────────────────────────────────────
 function PropertyCard({ project }) {
@@ -70,7 +84,7 @@ function PropertyCard({ project }) {
       className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px] bg-white cursor-pointer rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group"
     >
       {/* Image */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden bg-slate-100">
         <img
           src={project.image}
           alt={project.title}
@@ -105,17 +119,33 @@ function PropertyCard({ project }) {
           </button>
         </div>
 
-        {/* STATUS BADGE REMOVED FROM HERE */}
+        {/* Status Badge */}
+        {project.status && (
+          <div className="absolute bottom-3 left-3">
+            <StatusIcon status={project.status} />
+          </div>
+        )}
       </div>
 
       {/* Card Body */}
-      <div className="p-4 space-y-2">
-        <h3 className="font-semibold text-gray-900 text-[16px] leading-snug line-clamp-1">
+      <div className="p-4 space-y-1.5 text-left">
+        <h3 className="font-bold text-gray-905 text-[15px] leading-snug line-clamp-1">
           {project.title}
         </h3>
-        <p className="text-gray-500 text-[13px] leading-relaxed line-clamp-4">
-          {project.description}
-        </p>
+        <p className="text-gray-500 text-[13px]">📍 {project.location}</p>
+        <p className="font-bold text-[15px] text-emerald-700">{project.price}</p>
+
+        {/* Config + Area */}
+        {(project.config || project.area) && (
+          <div className="flex items-center gap-2 text-[12px] text-gray-500 pt-0.5">
+            {project.config && <span>{project.config}</span>}
+            {project.config && project.area && <span className="w-px h-3 bg-gray-350"></span>}
+            {project.area && <span>{project.area}</span>}
+          </div>
+        )}
+
+        {/* Builder */}
+        <p className="text-[12px] text-gray-400 pt-0.5">By {project.builder}</p>
       </div>
     </div>
   );
@@ -130,7 +160,7 @@ function ArrowButton({ direction, onClick, disabled }) {
       className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200
         ${disabled
           ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-white'
-          : 'border-gray-300 text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 bg-white shadow-sm'
+          : 'border-gray-300 text-gray-600 hover:border-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 bg-white shadow-sm'
         }`}
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -145,6 +175,39 @@ export default function FastMovingProjects() {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjectsList = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/projects');
+        if (res.ok) {
+          const data = await res.json();
+          const filtered = data
+            .filter(p => p.type === 'fast_moving')
+            .map(p => ({
+              id: p.id,
+              image: p.mainImage,
+              title: p.title,
+              location: p.location,
+              price: p.priceToken || 'Price on request',
+              status: p.status,
+              config: p.launchTimeline,
+              area: p.totalApts,
+              builder: p.author || 'Admin',
+              route: p.routeSubpath
+            }));
+          setProjects(filtered.length > 0 ? filtered : DEFAULT_PROJECTS);
+        } else {
+          setProjects(DEFAULT_PROJECTS);
+        }
+      } catch (error) {
+        console.error('Error fetching fast moving projects:', error);
+        setProjects(DEFAULT_PROJECTS);
+      }
+    };
+    fetchProjectsList();
+  }, []);
 
   const checkScroll = () => {
     const el = scrollRef.current;
@@ -153,35 +216,17 @@ export default function FastMovingProjects() {
     setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
   };
 
-  // Unified effect for manual scroll event listeners & auto-scrolling interval
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    
     checkScroll();
     el.addEventListener('scroll', checkScroll, { passive: true });
     window.addEventListener('resize', checkScroll);
-
-    // Auto-scroll loop every 3 seconds
-    const autoScrollInterval = setInterval(() => {
-      const cardWidth = el.querySelector('[class*="flex-shrink-0"]')?.offsetWidth || 300;
-      const gap = 16; // gap-4 equivalent in pixels
-      const step = cardWidth + gap;
-
-      // If we've reached near the end of the scroll track, loop back to start
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: step, behavior: 'smooth' });
-      }
-    }, 2500);
-
     return () => {
       el.removeEventListener('scroll', checkScroll);
       window.removeEventListener('resize', checkScroll);
-      clearInterval(autoScrollInterval); // Clean up interval on unmount
     };
-  }, []);
+  }, [projects]);
 
   const scroll = (dir) => {
     const el = scrollRef.current;
@@ -207,42 +252,35 @@ export default function FastMovingProjects() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 flex flex-col gap-6">
 
-        {/* Header Block */}
+        {/* Header Row */}
         <motion.div 
           variants={{
             hidden: { opacity: 0, y: 40 },
             visible: { opacity: 1, y: 0 },
           }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="space-y-3"
+          className="flex items-center justify-between"
         >
-          <div className="flex items-center justify-between">
-            <h2 className="text-[22px] sm:text-[26px] md:text-[30px] font-bold text-gray-900 leading-tight">
-              Why Choose Hillsite?
-            </h2>
+          <h2 className="text-[22px] sm:text-[26px] md:text-[30px] font-bold text-gray-900 leading-tight">
+           Fast Moving Projects
+          </h2>
 
-            <div className="flex items-center gap-3">
-              <a
-                href="#"
-                className="hidden sm:flex items-center gap-1 text-blue-600 text-sm font-medium hover:underline"
-              >
-                View all
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m9 18 6-6-6-6"/>
-                </svg>
-              </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="#"
+              className="hidden sm:flex items-center gap-1 text-emerald-750 text-sm font-medium hover:underline"
+            >
+              View all
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </a>
 
-              <div className="flex gap-2">
-                <ArrowButton direction="left" onClick={() => scroll('left')} disabled={!canScrollLeft} />
-                <ArrowButton direction="right" onClick={() => scroll('right')} disabled={!canScrollRight} />
-              </div>
+            <div className="flex gap-2">
+              <ArrowButton direction="left" onClick={() => scroll('left')} disabled={!canScrollLeft} />
+              <ArrowButton direction="right" onClick={() => scroll('right')} disabled={!canScrollRight} />
             </div>
           </div>
-          
-          {/* Subheading / Description */}
-          <p className="text-gray-600 text-sm md:text-base max-w-3xl leading-relaxed">
-            When you invest in land, you're investing in your future, lifestyle, and long-term peace of mind. At Hillsite, we make the land-buying process transparent, secure, and hassle-free by offering carefully selected properties backed by professional support and trusted expertise.
-          </p>
         </motion.div>
 
         {/* Carousel Track */}
@@ -273,7 +311,7 @@ export default function FastMovingProjects() {
         >
           <a
             href="#"
-            className="flex items-center gap-1 text-blue-600 text-sm font-medium border border-blue-200 rounded-full px-5 py-2 hover:bg-blue-50 transition-colors"
+            className="flex items-center gap-1 text-emerald-750 text-sm font-medium border border-emerald-250 rounded-full px-5 py-2 hover:bg-emerald-50 transition-colors"
           >
             View all projects
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

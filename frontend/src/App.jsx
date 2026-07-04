@@ -5,13 +5,11 @@ import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
 import WhatsAppButton from './components/WhatsAppButton';
 import Footer from './components/Footer';
-import ScrollToTop from './components/ScrollToTop';
+import SmoothScroll from './components/SmoothScroll';
 
 import Home from './home/Home';
 import About from './pages/About';
-import CentrePark from './exclusiveProjects/CentrePark';
-import PurvaPanorama from './exclusiveProjects/PurvaPanorama';
-import HubtownSeasonsEcuador from './fastMovingProjects/HubtownSeasonsEcuador';
+import PropertyDetailPage from './pages/PropertyDetailPage';
 import ContactUsPage from './pages/ContactUs';
 
 import Login from './pages/Login';
@@ -37,9 +35,10 @@ function AppContent() {
         <Route path="/dashboard" element={<Dashboard />} />
 
         {/* Project Pages */}
-        <Route path="/centre-park" element={<CentrePark />} />
-        <Route path="/purva-panorama" element={<PurvaPanorama />} />
-        <Route path="/hubtown-seasons-ecuador" element={<HubtownSeasonsEcuador />} />
+        <Route path="/centre-park" element={<PropertyDetailPage />} />
+        <Route path="/purva-panorama" element={<PropertyDetailPage />} />
+        <Route path="/hubtown-seasons-ecuador" element={<PropertyDetailPage />} />
+        <Route path="/:slug" element={<PropertyDetailPage />} />
       </Routes>
 
       {/* Hide public WhatsApp chat and footer on admin console */}
@@ -52,8 +51,9 @@ function AppContent() {
 function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop/>
-      <AppContent />
+      <SmoothScroll>
+        <AppContent />
+      </SmoothScroll>
     </BrowserRouter>
   );
 }

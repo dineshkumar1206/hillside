@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Container from '../components/Container';
 import HomeFrom from '../forms/HomeFrom'; 
 
 export default function Hero() {
+  const [isPreloaderFinished, setIsPreloaderFinished] = useState(
+    // If the preloader was already shown this session, trigger immediately
+    sessionStorage.getItem('preloaderShown') === 'true'
+  );
+
+  useEffect(() => {
+    const handleFinished = () => {
+      setIsPreloaderFinished(true);
+      sessionStorage.setItem('preloaderShown', 'true');
+    };
+
+    window.addEventListener('preloader-finished', handleFinished);
+
+    // Fallback: in case of any event race conditions, show after 2s max
+    const fallback = setTimeout(() => {
+      setIsPreloaderFinished(true);
+    }, 2000);
+
+    return () => {
+      window.removeEventListener('preloader-finished', handleFinished);
+      clearTimeout(fallback);
+    };
+  }, []);
+
   return (
     <section 
       // Added '-mt-[104px]' to pull the hero section up under the navbar
@@ -21,7 +45,7 @@ export default function Hero() {
         {/* Left Content Column with reveal animation */}
         <motion.div 
           initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
+          animate={isPreloaderFinished ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
           className="space-y-6 max-w-3xl text-left text-white"
         >
@@ -30,7 +54,7 @@ export default function Hero() {
           <div className="space-y-3">
             <motion.h2 
               initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isPreloaderFinished ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
               transition={{ delay: 0.15, duration: 0.6 }}
               className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight drop-shadow-md text-[#7fff00]"
             >
@@ -38,7 +62,7 @@ export default function Hero() {
             </motion.h2>
             <motion.h1 
               initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isPreloaderFinished ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
               transition={{ delay: 0.3, duration: 0.6 }}
               className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold leading-snug tracking-normal drop-shadow-md"
             >
@@ -49,7 +73,7 @@ export default function Hero() {
           {/* Frosted Glass Information Card Block with separate fade-in */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isPreloaderFinished ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.5, duration: 0.6 }}
             className="w-full bg-black/35 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:p-8 text-white/95 space-y-4 shadow-xl"
           >

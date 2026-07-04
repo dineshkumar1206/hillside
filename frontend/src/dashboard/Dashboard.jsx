@@ -28,14 +28,7 @@ export default function Dashboard() {
   const email = useSelector(state => state.auth.email) || 'Admin';
 
   // Tab State
-  const [activeTab, setActiveTab] = useState('why_choose'); // 'why_choose' | 'fast_moving' | 'latest_launch' | 'exclusive'
-
-  // WhyChoose CMS state
-  const [cmsItems, setCmsItems] = useState([]);
-  const [cmsLoading, setCmsLoading] = useState(false);
-  const [cmsError, setCmsError] = useState(null);
-  const [editingItem, setEditingItem] = useState(null);
-  const [cardDeleteConfirm, setCardDeleteConfirm] = useState(null);
+  const [activeTab, setActiveTab] = useState('fast_moving'); // 'fast_moving' | 'latest_launch' | 'exclusive'
 
   // Projects CMS state
   const [projects, setProjects] = useState([]);
@@ -51,95 +44,12 @@ export default function Dashboard() {
       return;
     }
     
-    if (activeTab === 'why_choose') {
-      fetchCmsItems();
-    } else {
-      fetchProjects();
-    }
+    fetchProjects();
   }, [token, navigate, activeTab]);
 
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login');
-  };
-
-  // WhyChoose CMS API calls
-  const fetchCmsItems = async () => {
-    setCmsLoading(true);
-    setCmsError(null);
-    try {
-      const res = await fetch('http://localhost:5000/api/why-choose');
-      if (res.ok) {
-        const data = await res.json();
-        setCmsItems(data);
-      } else {
-        setCmsError('Failed to fetch CMS cards.');
-      }
-    } catch (err) {
-      setCmsError('Failed to connect to the server for CMS data.');
-    } finally {
-      setCmsLoading(false);
-    }
-  };
-
-  const handleSaveCard = async (e) => {
-    e.preventDefault();
-    if (!editingItem.title || !editingItem.description) return;
-
-    const isEdit = !!editingItem.id;
-    const url = isEdit
-      ? `http://localhost:5000/api/why-choose/${editingItem.id}`
-      : 'http://localhost:5000/api/why-choose';
-    const method = isEdit ? 'PUT' : 'POST';
-
-    try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          title: editingItem.title,
-          description: editingItem.description,
-          iconName: editingItem.iconName || 'HelpCircle',
-          sortOrder: parseInt(editingItem.sortOrder || 0, 10)
-        })
-      });
-
-      if (response.ok) {
-        setEditingItem(null);
-        fetchCmsItems();
-      } else {
-        const data = await response.json();
-        alert(data.message || 'Failed to save card.');
-      }
-    } catch (error) {
-      console.error('Error saving card:', error);
-      alert('Error connecting to backend server.');
-    }
-  };
-
-  const handleDeleteCard = async () => {
-    if (!cardDeleteConfirm) return;
-    try {
-      const response = await fetch(`http://localhost:5000/api/why-choose/${cardDeleteConfirm.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        setCardDeleteConfirm(null);
-        fetchCmsItems();
-      } else {
-        const data = await response.json();
-        alert(data.message || 'Failed to delete card.');
-      }
-    } catch (error) {
-      console.error('Error deleting card:', error);
-      alert('Error connecting to backend server.');
-    }
   };
 
   // Projects CMS API calls
@@ -258,10 +168,10 @@ export default function Dashboard() {
 
   // Dynamic headers
   const getTabHeaderTitle = () => {
-    if (activeTab === 'fast_moving') return 'Fast Moving Projects Manager';
-    if (activeTab === 'latest_launch') return 'Latest Launches Manager';
+    if (activeTab === 'fast_moving') return 'Premium 1-Acre Estates Manager';
+    if (activeTab === 'latest_launch') return 'Elite 1.5-Acre Estates Manager';
     if (activeTab === 'exclusive') return 'Exclusive Projects Manager';
-    return 'Why Choose Hillsite? CMS';
+    return '';
   };
 
   return (
@@ -284,17 +194,6 @@ export default function Dashboard() {
 
           {/* Navigation Menus in Sidebar */}
           <nav className="p-4 space-y-2 mt-4">
-            <button
-              onClick={() => setActiveTab('why_choose')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 text-left outline-none cursor-pointer border ${
-                activeTab === 'why_choose'
-                  ? 'bg-[#11241f] border-[#1b3d33] text-white shadow-md shadow-[#7fff00]/5'
-                  : 'text-slate-400 hover:text-white hover:bg-[#11241f]/20 border-transparent'
-              }`}
-            >
-              <LayoutDashboard size={18} className={activeTab === 'why_choose' ? 'text-[#7fff00]' : ''} />
-              <span>Why Choose CMS</span>
-            </button>
 
             <button
               onClick={() => setActiveTab('fast_moving')}
@@ -305,7 +204,7 @@ export default function Dashboard() {
               }`}
             >
               <Flame size={18} className={activeTab === 'fast_moving' ? 'text-[#7fff00]' : ''} />
-              <span>Fast Moving Projects</span>
+              <span>Premium 1-Acre Estates</span>
             </button>
 
             <button
@@ -317,7 +216,7 @@ export default function Dashboard() {
               }`}
             >
               <Rocket size={18} className={activeTab === 'latest_launch' ? 'text-[#7fff00]' : ''} />
-              <span>Latest Launches</span>
+              <span>Elite 1.5-Acre Estates</span>
             </button>
 
             <button
@@ -367,44 +266,24 @@ export default function Dashboard() {
           <div>
             <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">{getTabHeaderTitle()}</h2>
             <p className="text-sm text-slate-400 mt-1">
-              {activeTab === 'why_choose' 
-                ? 'Manage the dynamic value proposition cards displayed on the home page.'
-                : `Manage listings published under the ${activeTab.replace('_', ' ')} properties carousel.`
-              }
+              Manage listings published under the {activeTab === 'fast_moving' ? 'Premium 1-Acre Estates' : activeTab === 'latest_launch' ? 'Elite 1.5-Acre Estates' : 'Exclusive Projects'} properties carousel.
             </p>
           </div>
           
-          {activeTab === 'why_choose' ? (
-            <button
-              onClick={() => setEditingItem({ title: '', description: '', iconName: 'Mountain', sortOrder: 0 })}
-              className="flex items-center gap-2 bg-[#7fff00] hover:bg-[#6ee600] text-slate-950 px-5 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-[#7fff00]/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
-            >
-              <Plus size={16} />
-              Add New Card
-            </button>
-          ) : (
-            <button
-              onClick={() => setEditingProject({ 
-                title: '', author: '', location: '', routeSubpath: '', priceToken: '', 
-                status: 'Ready to Move', possessionDate: '', totalApts: '', launchTimeline: '', 
-                reraId: '', amenities: [], description: '', mainImageFile: null, galleryFiles: null 
-              })}
-              className="flex items-center gap-2 bg-[#7fff00] hover:bg-[#6ee600] text-slate-950 px-5 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-[#7fff00]/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
-            >
-              <Plus size={16} />
-              Add Listing
-            </button>
-          )}
+          <button
+            onClick={() => setEditingProject({ 
+              title: '', author: '', location: '', routeSubpath: '', priceToken: '', 
+              status: 'Ready to Move', possessionDate: '', totalApts: '', launchTimeline: '', 
+              reraId: '', amenities: [], description: '', mainImageFile: null, galleryFiles: null 
+            })}
+            className="flex items-center gap-2 bg-[#7fff00] hover:bg-[#6ee600] text-slate-950 px-5 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-[#7fff00]/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
+          >
+            <Plus size={16} />
+            Add Listing
+          </button>
         </div>
 
-        {/* Global Connection / Fetch Errors */}
-        {cmsError && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-300 rounded-2xl p-4 mb-6 flex items-start gap-3">
-            <AlertCircle size={20} className="shrink-0 mt-0.5" />
-            <p className="text-sm">{cmsError}</p>
-          </div>
-        )}
-        {projectError && (
+        {/* Global Connec        {projectError && (
           <div className="bg-red-500/10 border border-red-500/30 text-red-300 rounded-2xl p-4 mb-6 flex items-start gap-3">
             <AlertCircle size={20} className="shrink-0 mt-0.5" />
             <p className="text-sm">{projectError}</p>
@@ -412,277 +291,97 @@ export default function Dashboard() {
         )}
 
         {/* Dynamic Display Area */}
-        {activeTab === 'why_choose' ? (
-          /* Why Choose CMS Tab */
-          cmsLoading ? (
-            <div className="flex items-center justify-center py-40">
-              <RefreshCw size={32} className="animate-spin text-slate-500" />
-            </div>
-          ) : cmsItems.length === 0 ? (
-            <div className="bg-[#0a1411]/20 border border-[#142822] rounded-3xl p-16 text-center shadow-inner">
-              <p className="text-slate-400 font-medium mb-1">No cards found in the database.</p>
-              <p className="text-xs text-slate-500">Seeded cards will load automatically when you reset/sync the database.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {cmsItems.map((item) => {
-                const Icon = LucideIcons[item.iconName] || HelpCircle;
-                return (
-                  <div 
-                    key={item.id}
-                    className="bg-[#0a1411]/50 border border-[#142822] rounded-3xl p-6 flex flex-col justify-between hover:border-[#1e3c33] hover:bg-[#0c1815]/60 hover:shadow-xl hover:shadow-black/25 transition-all duration-300 group relative"
-                  >
-                    <div>
-                      <div className="flex justify-between items-start mb-6">
-                        <div className="bg-[#12231e] text-[#7fff00] border border-[#1f3f35] rounded-2xl p-3 shadow-md group-hover:scale-105 transition-transform duration-300">
-                          <Icon size={22} />
-                        </div>
-                        <span className="text-[10px] bg-[#12231e] text-slate-400 px-3 py-1 rounded-full font-bold border border-[#1f3f35]/50">
-                          Sort Order: {item.sortOrder}
-                        </span>
-                      </div>
-                      <h3 className="text-lg font-bold text-white mb-2.5 tracking-tight group-hover:text-[#7fff00] transition-colors duration-300">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs text-slate-450 leading-relaxed line-clamp-4 mb-8 font-normal">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    <div className="flex gap-2.5 border-t border-[#142822]/80 pt-4 justify-end">
-                      <button
-                        onClick={() => setEditingItem(item)}
-                        className="flex items-center gap-1.5 bg-[#12231e] hover:bg-[#1a342c] text-slate-200 px-4 py-2 rounded-xl text-xs font-bold border border-[#1d3a31]/55 transition-colors cursor-pointer outline-none"
-                      >
-                        <Pencil size={12} />
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => setCardDeleteConfirm(item)}
-                        className="flex items-center gap-1.5 bg-red-950/20 hover:bg-red-900/30 text-red-300 border border-red-900/25 px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer outline-none"
-                      >
-                        <Trash2 size={12} />
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )
+        {projectLoading ? (
+          <div className="flex items-center justify-center py-40">
+            <RefreshCw size={32} className="animate-spin text-slate-500" />
+          </div>
+        ) : filteredProjects.length === 0 ? (
+          <div className="bg-[#0a1411]/20 border border-[#142822] rounded-3xl p-16 text-center shadow-inner">
+            <p className="text-slate-400 font-medium mb-1">No project listings found for this category.</p>
+            <p className="text-xs text-slate-500">Click "+ Add Listing" to create your first dynamic property listing.</p>
+          </div>
         ) : (
-          /* Project Listings CMS Tab (Fast Moving, Latest, Exclusive) */
-          projectLoading ? (
-            <div className="flex items-center justify-center py-40">
-              <RefreshCw size={32} className="animate-spin text-slate-500" />
-            </div>
-          ) : filteredProjects.length === 0 ? (
-            <div className="bg-[#0a1411]/20 border border-[#142822] rounded-3xl p-16 text-center shadow-inner">
-              <p className="text-slate-400 font-medium mb-1">No project listings found for this category.</p>
-              <p className="text-xs text-slate-500">Click "+ Add Listing" to create your first dynamic property listing.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredProjects.map((project) => (
-                <div 
-                  key={project.id}
-                  className="bg-[#0a1411]/50 border border-[#142822] rounded-3xl overflow-hidden flex flex-col justify-between hover:border-[#1e3c33] hover:bg-[#0c1815]/60 hover:shadow-xl hover:shadow-black/25 transition-all duration-300 group"
-                >
-                  <div>
-                    {/* Cover image with status badge */}
-                    <div className="relative overflow-hidden h-[190px] bg-slate-950">
-                      <img 
-                        src={project.mainImage || 'https://placehold.co/320x200/e2e8f0/94a3b8?text=Property'} 
-                        alt={project.title}
-                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700 ease-out"
-                        onError={(e) => {
-                          e.target.src = `https://placehold.co/320x200/e2e8f0/94a3b8?text=${encodeURIComponent(project.title)}`;
-                        }}
-                      />
-                      {project.status && (
-                        <span className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm text-[#7fff00] text-[10px] font-bold px-3 py-1.5 rounded-full border border-emerald-950/40">
-                          {project.status}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="p-5 space-y-2.5">
-                      <div className="flex justify-between items-start gap-2">
-                        <span className="text-[11px] text-slate-450 font-semibold truncate">By {project.author || 'Admin'}</span>
-                        <span className="text-[11px] text-emerald-400 font-bold">{project.routeSubpath}</span>
-                      </div>
-                      
-                      <h3 className="text-base font-extrabold text-white leading-snug tracking-tight truncate group-hover:text-[#7fff00] transition-colors duration-300">
-                        {project.title}
-                      </h3>
-                      
-                      <p className="text-xs text-slate-400 flex items-center gap-1">
-                        <span>📍</span> {project.location}
-                      </p>
-                      
-                      <p className="text-[#7fff00] font-black text-base pt-1">
-                        {project.priceToken || 'Price on request'}
-                      </p>
-
-                      {/* Display specs if any */}
-                      {(project.launchTimeline || project.totalApts) && (
-                        <div className="flex items-center gap-2 text-[11px] text-slate-400 pt-1.5 border-t border-[#142822]/60">
-                          {project.launchTimeline && <span>{project.launchTimeline}</span>}
-                          {project.launchTimeline && project.totalApts && <span className="w-px h-2.5 bg-[#142822]"></span>}
-                          {project.totalApts && <span>{project.totalApts}</span>}
-                        </div>
-                      )}
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProjects.map((project) => (
+              <div 
+                key={project.id}
+                className="bg-[#0a1411]/50 border border-[#142822] rounded-3xl overflow-hidden flex flex-col justify-between hover:border-[#1e3c33] hover:bg-[#0c1815]/60 hover:shadow-xl hover:shadow-black/25 transition-all duration-300 group"
+              >
+                <div>
+                  {/* Cover image with status badge */}
+                  <div className="relative overflow-hidden h-[190px] bg-slate-950">
+                    <img 
+                      src={project.mainImage || 'https://placehold.co/320x200/e2e8f0/94a3b8?text=Property'} 
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700 ease-out"
+                      onError={(e) => {
+                        e.target.src = `https://placehold.co/320x200/e2e8f0/94a3b8?text=${encodeURIComponent(project.title)}`;
+                      }}
+                    />
+                    {project.status && (
+                      <span className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm text-[#7fff00] text-[10px] font-bold px-3 py-1.5 rounded-full border border-emerald-950/40">
+                        {project.status}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="flex gap-2.5 border-t border-[#142822]/80 p-5 pt-4 justify-end bg-slate-950/20">
-                    <button
-                      onClick={() => setEditingProject({ 
-                        ...project, 
-                        amenities: JSON.parse(project.amenities || '[]'),
-                        mainImageFile: null,
-                        galleryFiles: null
-                      })}
-                      className="flex items-center gap-1.5 bg-[#12231e] hover:bg-[#1a342c] text-slate-200 px-4 py-2 rounded-xl text-xs font-bold border border-[#1d3a31]/55 transition-colors cursor-pointer outline-none"
-                    >
-                      <Pencil size={12} />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => setProjectDeleteConfirm(project)}
-                      className="flex items-center gap-1.5 bg-red-950/20 hover:bg-red-900/30 text-red-300 border border-red-900/25 px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer outline-none"
-                    >
-                      <Trash2 size={12} />
-                      Delete
-                    </button>
+                  <div className="p-5 space-y-2.5">
+                    <div className="flex justify-between items-start gap-2">
+                      <span className="text-[11px] text-slate-450 font-semibold truncate">By {project.author || 'Admin'}</span>
+                      <span className="text-[11px] text-emerald-400 font-bold">{project.routeSubpath}</span>
+                    </div>
+                    
+                    <h3 className="text-base font-extrabold text-white leading-snug tracking-tight truncate group-hover:text-[#7fff00] transition-colors duration-300">
+                      {project.title}
+                    </h3>
+                    
+                    <p className="text-xs text-slate-400 flex items-center gap-1">
+                      <span>📍</span> {project.location}
+                    </p>
+                    
+                    <p className="text-[#7fff00] font-black text-base pt-1">
+                      {project.priceToken || 'Price on request'}
+                    </p>
+
+                    {/* Display specs if any */}
+                    {(project.launchTimeline || project.totalApts) && (
+                      <div className="flex items-center gap-2 text-[11px] text-slate-450 pt-1.5 border-t border-[#142822]/60">
+                        {project.launchTimeline && <span>{project.launchTimeline}</span>}
+                        {project.launchTimeline && project.totalApts && <span className="w-px h-2.5 bg-[#142822]"></span>}
+                        {project.totalApts && <span>{project.totalApts}</span>}
+                      </div>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
-          )
+
+                <div className="flex gap-2.5 border-t border-[#142822]/80 p-5 pt-4 justify-end bg-slate-950/20">
+                  <button
+                    onClick={() => setEditingProject({ 
+                      ...project, 
+                      amenities: JSON.parse(project.amenities || '[]'),
+                      mainImageFile: null,
+                      galleryFiles: null
+                    })}
+                    className="flex items-center gap-1.5 bg-[#12231e] hover:bg-[#1a342c] text-slate-200 px-4 py-2 rounded-xl text-xs font-bold border border-[#1d3a31]/55 transition-colors cursor-pointer outline-none"
+                  >
+                    <Pencil size={12} />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => setProjectDeleteConfirm(project)}
+                    className="flex items-center gap-1.5 bg-red-950/20 hover:bg-red-900/30 text-red-300 border border-red-900/25 px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer outline-none"
+                  >
+                    <Trash2 size={12} />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </main>
 
-      {/* ─── MODAL: CMS ADD/EDIT CARD ─── */}
-      {editingItem && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0a1411] border border-[#1c3d33] rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl relative animate-scale-in max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-bold text-white mb-5 tracking-tight">
-              {editingItem.id ? 'Edit Content Card' : 'Add Content Card'}
-            </h3>
-            
-            <form onSubmit={handleSaveCard} className="space-y-5">
-              <div>
-                <label className="block text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-widest">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Scenic Hill Views"
-                  value={editingItem.title}
-                  onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })}
-                  className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-2xl px-4 py-3 text-sm focus:border-[#7fff00]/60 outline-none transition-colors"
-                />
-              </div>
 
-              <div>
-                <label className="block text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-widest">
-                  Description
-                </label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="Describe this feature or value proposition..."
-                  value={editingItem.description}
-                  onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
-                  className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-2xl px-4 py-3 text-sm focus:border-[#7fff00]/60 outline-none transition-colors resize-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-widest">
-                    Icon Theme
-                  </label>
-                  <select
-                    value={editingItem.iconName}
-                    onChange={(e) => setEditingItem({ ...editingItem, iconName: e.target.value })}
-                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-2xl px-3 py-3 text-sm focus:border-[#7fff00]/60 outline-none transition-colors appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%237fff00%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:0.9rem_0.9rem] bg-[right_1rem_center] bg-no-repeat"
-                  >
-                    {POPULAR_ICONS.map((icon) => (
-                      <option key={icon} value={icon} className="bg-[#0a1411]">{icon}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-widest">
-                    Sort Order
-                  </label>
-                  <input
-                    type="number"
-                    value={editingItem.sortOrder}
-                    onChange={(e) => setEditingItem({ ...editingItem, sortOrder: e.target.value })}
-                    className="w-full bg-[#060c0a] border border-[#1b3d33] text-white rounded-2xl px-4 py-3 text-sm focus:border-[#7fff00]/60 outline-none transition-colors"
-                  />
-                </div>
-              </div>
-
-              {/* Icon Preview */}
-              <div className="bg-[#060c0a] border border-[#142822] rounded-2xl p-4 flex items-center justify-between">
-                <span className="text-xs text-slate-400 font-medium">Icon Preview:</span>
-                <div className="bg-[#12231e] text-[#7fff00] rounded-xl p-3 border border-[#1f3f35] shadow-inner">
-                  {React.createElement(LucideIcons[editingItem.iconName] || HelpCircle, { size: 24 })}
-                </div>
-              </div>
-
-              <div className="flex gap-3 justify-end pt-4">
-                <button
-                  type="button"
-                  onClick={() => setEditingItem(null)}
-                  className="bg-[#12231e] hover:bg-[#1a342c] text-slate-350 px-5 py-3 rounded-xl text-xs font-bold border border-[#1d3a31]/55 transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-[#7fff00] hover:bg-[#6ee600] text-slate-950 px-6 py-3 rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-md shadow-[#7fff00]/10"
-                >
-                  Save Card
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ─── MODAL: DELETE CMS CARD CONFIRMATION ─── */}
-      {cardDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0a1411] border border-red-950/60 rounded-3xl p-6 max-w-sm w-full shadow-2xl relative animate-scale-in">
-            <h3 className="text-md font-bold text-red-400 mb-2.5">Delete Content Card?</h3>
-            <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-              Are you sure you want to permanently delete <strong className="text-slate-200 font-semibold">{cardDeleteConfirm.title}</strong>? This card will immediately disappear from the public home page.
-            </p>
-            
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setCardDeleteConfirm(null)}
-                className="bg-[#12231e] hover:bg-[#1a342c] text-slate-355 px-4 py-2 rounded-xl text-xs font-bold border border-[#1d3a31]/50 cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteCard}
-                className="bg-red-650 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-              >
-                Confirm Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ─── MODAL: MODIFY DYNAMIC LISTING & CONTENT ─── */}
       {editingProject && (

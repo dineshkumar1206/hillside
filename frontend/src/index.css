@@ -5,8 +5,12 @@
   --font-sans: "Sora", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth !important;
+}
+
 body {
-  background-color: #FFF9E5;
+  background-color: #FAFDF9;
   font-family: var(--font-sans);
   margin: 0;
 }

@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { sequelize } from '../config/db.js';
 import User from './User.js';
-import WhyChoose from './WhyChoose.js';
 import Project from './Project.js';
 
 export const seedDatabase = async () => {
@@ -38,38 +37,7 @@ export const seedDatabase = async () => {
       console.warn('[SEQUELIZE] Seeding skipped: ADMIN_EMAIL or ADMIN_PASSWORD not configured in .env');
     }
 
-    // Seed default "Why Choose Hillsite?" cards if table is empty
-    const whyChooseCount = await WhyChoose.count();
-    if (whyChooseCount === 0) {
-      const defaultCards = [
-        {
-          title: 'Scenic Hill Views',
-          description: 'Enjoy breathtaking panoramic views of nature and the serene landscape of Yelagiri Hills right from your property.',
-          iconName: 'Mountain',
-          sortOrder: 1
-        },
-        {
-          title: 'Premium Legal Verification',
-          description: 'Clear titles, certified survey numbers, and legally validated land deeds for a 100% stress-free acquisition.',
-          iconName: 'FileCheck',
-          sortOrder: 2
-        },
-        {
-          title: 'High Return Investment',
-          description: 'Yelagiri is one of the fastest-growing vacation destinations, ensuring high appreciation of land value.',
-          iconName: 'TrendingUp',
-          sortOrder: 3
-        },
-        {
-          title: 'Custom Villa Construction',
-          description: 'We offer optional customizable eco-friendly villa designs matching your preferences and lifestyle.',
-          iconName: 'Home',
-          sortOrder: 4
-        }
-      ];
-      await WhyChoose.bulkCreate(defaultCards);
-      console.log('[SEQUELIZE] Seeded default "Why Choose Hillsite?" cards.');
-    }
+
 
     // Seed default projects if table is empty
     const projectCount = await Project.count();
@@ -81,7 +49,7 @@ export const seedDatabase = async () => {
           title: 'Scenic Valley Plots',
           author: 'Hillsite Developers',
           location: 'Yelagiri Hills',
-          routeSubpath: '/hubtown-seasons-ecuador',
+          routeSubpath: '/scenic-valley-plots',
           priceToken: '₹ 25 L Onwards',
           status: 'Ready to Move',
           possessionDate: 'Immediate',
@@ -98,7 +66,7 @@ export const seedDatabase = async () => {
           title: 'Eco Villa Retreats',
           author: 'Hillsite Developers',
           location: 'Yelagiri Hills',
-          routeSubpath: '/hubtown-seasons-ecuador',
+          routeSubpath: '/eco-villa-retreats',
           priceToken: '₹ 1.5 Cr Onwards',
           status: 'Under Construction',
           possessionDate: 'Dec 2027',
@@ -116,7 +84,7 @@ export const seedDatabase = async () => {
           title: 'Athanavur Heights',
           author: 'L And T Realty',
           location: 'Yelagiri',
-          routeSubpath: '/hubtown-seasons-ecuador',
+          routeSubpath: '/athanavur-heights',
           priceToken: '₹ 1.18 Cr Onward',
           status: 'New Launch',
           possessionDate: 'Dec 2028',
@@ -133,7 +101,7 @@ export const seedDatabase = async () => {
           title: 'Mangalam Premium Retreats',
           author: 'Rustomjee Builders',
           location: 'Yelagiri',
-          routeSubpath: '/hubtown-seasons-ecuador',
+          routeSubpath: '/mangalam-premium-retreats',
           priceToken: '₹ 9.61 Cr Onwards',
           status: 'New Launch',
           possessionDate: 'Immediate',
@@ -151,7 +119,7 @@ export const seedDatabase = async () => {
           title: 'Today Citadel Juinagar',
           author: 'Hillsite Developers',
           location: 'Yelagiri Hills',
-          routeSubpath: '/purva-panorama',
+          routeSubpath: '/today-citadel-juinagar',
           priceToken: '₹ 1.80 Cr Onwards',
           status: 'Ready to Move',
           possessionDate: 'Immediate',

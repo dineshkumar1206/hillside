@@ -6,7 +6,6 @@ import { fileURLToPath } from 'url';
 import { initDB } from './config/db.js';
 import { seedDatabase } from './models/dbInit.js';
 import authRoutes from './routes/authRoutes.js';
-import whyChooseRoutes from './routes/whyChooseRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,7 +35,6 @@ app.get('/health', (req, res) => {
 
 // Register api router paths
 app.use('/api/auth', authRoutes);
-app.use('/api/why-choose', whyChooseRoutes);
 app.use('/api/projects', projectRoutes);
 
 

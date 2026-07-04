@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import BorderGlow from '../components/BorderGlow'; 
 
 // ─── Seeded Fallback Feature Data ────────────────────────────────────────────
 const DEFAULT_PROJECTS = [
@@ -42,111 +43,88 @@ const DEFAULT_PROJECTS = [
   }
 ];
 
-// ─── Status Icon ─────────────────────────────────────────────────────────────
-function StatusIcon({ status }) {
-  const isReady = status === 'Ready to Move' || status === 'Verified';
-
-  return (
-    <span className="flex items-center gap-1.5 bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium px-3 py-1.5 rounded-full">
-      {isReady ? (
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="7.5" cy="15.5" r="5.5"/>
-          <path d="m21 2-9.6 9.6"/>
-          <path d="m15.5 7.5 3 3L22 7l-3-3"/>
-        </svg>
-      ) : (
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M2 20h20"/>
-          <path d="M10 20V8l8-4v16"/>
-          <path d="M6 20v-4"/>
-          <rect x="14" y="14" width="2" height="6"/>
-        </svg>
-      )}
-      {status}
-    </span>
-  );
-}
-
 // ─── Property Card ────────────────────────────────────────────────────────────
 function PropertyCard({ project }) {
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
 
   return (
-    <div 
-      onClick={() => {
-        navigate(project.route);
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      }}
-      className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px] bg-white cursor-pointer rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group"
-    >
-      {/* Image */}
-      <div className="relative overflow-hidden bg-slate-100">
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-[190px] sm:h-[200px] object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-          onError={(e) => {
-            e.target.src = `https://placehold.co/320x200/e2e8f0/94a3b8?text=${encodeURIComponent(project.title)}`;
+    <div className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px] hover:-translate-y-1.5 transition-transform duration-300 ease-out">
+      <BorderGlow
+        edgeSensitivity={25}
+        backgroundColor="#ffffff" 
+        borderRadius={16}
+        coneSpread={30}
+        animated={false}
+        colors={['#10b981', '#34d399', '#059669']} 
+        className="w-full border border-gray-200 shadow-sm overflow-hidden"
+      >
+        <div 
+          onClick={() => {
+            navigate(project.route);
+            window.scrollTo({ top: 0, behavior: "smooth" });
           }}
-        />
+          className="cursor-pointer group flex flex-col h-full bg-transparent text-left"
+        >
+          {/* Top Status Bar Container (Now positioned safely above the image layout) */}
+          <div className="px-4 pt-4 pb-2">
+            <span className="inline-block text-[10px] tracking-wider uppercase font-bold text-gray-500 border border-gray-200 bg-gray-50/80 px-2.5 py-1 rounded-md">
+              📌 {project.status || 'New Launch'}
+            </span>
+          </div>
 
-        {/* Action Buttons */}
-        <div className="absolute top-3 right-3 flex gap-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setLiked(!liked);
-            }}
-            className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow hover:bg-white transition-colors"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill={liked ? '#ef4444' : 'none'} stroke={liked ? '#ef4444' : '#374151'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
-          </button>
-          <button 
-            onClick={(e) => e.stopPropagation()} 
-            className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow hover:bg-white transition-colors"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-            </svg>
-          </button>
+          {/* Media Window Container */}
+          <div className="relative mx-3 overflow-hidden rounded-xl bg-gray-200 aspect-[16/10]">
+            <img
+              src={project.image}
+              alt={project.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              onError={(e) => {
+                e.target.src = `https://placehold.co/320x200/e2e8f0/94a3b8?text=${encodeURIComponent(project.title)}`;
+              }}
+            />
+
+            {/* Overlay Actions */}
+            <div className="absolute top-3 right-3 flex gap-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLiked(!liked);
+                }}
+                className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100 shadow-sm hover:bg-gray-50 transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill={liked ? '#ef4444' : 'none'} stroke={liked ? '#ef4444' : '#374151'} strokeWidth="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Info Layout */}
+          <div className="p-4 flex flex-col flex-grow space-y-2">
+            <h3 className="font-bold text-gray-900 text-base leading-snug line-clamp-1 group-hover:text-emerald-600 transition-colors">
+              {project.title}
+            </h3>
+
+            <div className="flex items-center text-xs text-gray-400">
+              <span className="text-red-500 mr-1">📍</span> {project.location}
+            </div>
+
+            <div className="text-sm font-bold text-emerald-600">
+              {project.price}
+            </div>
+
+            <div className="flex items-center gap-4 pt-1 text-xs text-gray-400">
+              <span>{project.config}</span>
+              <span>{project.area}</span>
+            </div>
+
+            <div className="pt-2 text-[11px] text-gray-400 border-t border-gray-50">
+              <span>By <span className="text-gray-500 font-medium">{project.builder}</span></span>
+            </div>
+          </div>
         </div>
-
-        {/* Status Badge */}
-        {project.status && (
-          <div className="absolute bottom-3 left-3">
-            <StatusIcon status={project.status} />
-          </div>
-        )}
-      </div>
-
-      {/* Card Body */}
-      <div className="p-4 space-y-1.5 text-left">
-        <h3 className="font-bold text-gray-905 text-[15px] leading-snug line-clamp-1">
-          {project.title}
-        </h3>
-        <p className="text-gray-500 text-[13px]">📍 {project.location}</p>
-        <p className="font-bold text-[15px] text-emerald-700">{project.price}</p>
-
-        {/* Config + Area */}
-        {(project.config || project.area) && (
-          <div className="flex items-center gap-2 text-[12px] text-gray-500 pt-0.5">
-            {project.config && <span>{project.config}</span>}
-            {project.config && project.area && <span className="w-px h-3 bg-gray-350"></span>}
-            {project.area && <span>{project.area}</span>}
-          </div>
-        )}
-
-        {/* Builder */}
-        <p className="text-[12px] text-gray-400 pt-0.5">By {project.builder}</p>
-      </div>
+      </BorderGlow>
     </div>
   );
 }
@@ -159,11 +137,11 @@ function ArrowButton({ direction, onClick, disabled }) {
       disabled={disabled}
       className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200
         ${disabled
-          ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-white'
-          : 'border-gray-300 text-gray-600 hover:border-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 bg-white shadow-sm'
+          ? 'border-gray-100 text-gray-200 cursor-not-allowed bg-white'
+          : 'border-gray-200 text-gray-600 hover:border-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 bg-white shadow-sm'
         }`}
     >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
         {direction === 'left' ? <path d="m15 18-6-6 6-6"/> : <path d="m9 18 6-6-6-6"/>}
       </svg>
     </button>
@@ -242,15 +220,11 @@ export default function FastMovingProjects() {
       viewport={{ once: true }}
       variants={{
         hidden: {},
-        visible: {
-          transition: {
-            staggerChildren: 0.25,
-          },
-        },
+        visible: { transition: { staggerChildren: 0.25 } },
       }}
       className="w-full bg-white py-10 md:py-14"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 flex flex-col gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 flex flex-col gap-4">
 
         {/* Header Row */}
         <motion.div 
@@ -262,16 +236,16 @@ export default function FastMovingProjects() {
           className="flex items-center justify-between"
         >
           <h2 className="text-[22px] sm:text-[26px] md:text-[30px] font-bold text-gray-900 leading-tight">
-           Fast Moving Projects
+            Elite 1.5-Acre Estates
           </h2>
 
           <div className="flex items-center gap-3">
             <a
               href="#"
-              className="hidden sm:flex items-center gap-1 text-emerald-750 text-sm font-medium hover:underline"
+              className="hidden sm:flex items-center gap-1 text-emerald-700 text-sm font-medium hover:underline"
             >
               View all
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="m9 18 6-6-6-6"/>
               </svg>
             </a>
@@ -291,7 +265,7 @@ export default function FastMovingProjects() {
           }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth pb-3 hide-scrollbar"
+          className="flex gap-4 overflow-x-auto scroll-smooth pt-4 pb-4 px-2 -mx-2 hide-scrollbar"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
@@ -300,7 +274,7 @@ export default function FastMovingProjects() {
           ))}
         </motion.div>
 
-        {/* View All — mobile only, below carousel */}
+        {/* View All — mobile only */}
         <motion.div 
           variants={{
             hidden: { opacity: 0, y: 40 },
@@ -311,10 +285,10 @@ export default function FastMovingProjects() {
         >
           <a
             href="#"
-            className="flex items-center gap-1 text-emerald-750 text-sm font-medium border border-emerald-250 rounded-full px-5 py-2 hover:bg-emerald-50 transition-colors"
+            className="flex items-center gap-1 text-emerald-700 text-sm font-medium border border-gray-200 rounded-full px-5 py-2 hover:bg-gray-50 transition-colors"
           >
             View all projects
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="m9 18 6-6-6-6"/>
             </svg>
           </a>

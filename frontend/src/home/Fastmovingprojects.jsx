@@ -236,7 +236,7 @@ export default function FastMovingProjects() {
           className="flex items-center justify-between"
         >
           <h2 className="text-[22px] sm:text-[26px] md:text-[30px] font-bold text-gray-900 leading-tight">
-            Elite 1.5-Acre Estates
+            Premium 1-Acre Estates
           </h2>
 
           <div className="flex items-center gap-3">

@@ -110,14 +110,24 @@ const BorderGlow = ({
 
   const colorSensitivity = edgeSensitivity + 20;
   const isVisible = isHovered || sweepActive;
-  const borderOpacity = isVisible
-    ? Math.max(0, (edgeProximity * 100 - colorSensitivity) / (100 - colorSensitivity))
-    : 0;
 
   const meshGradients = buildMeshGradients(colors);
   const borderBg = meshGradients.map(g => `${g} border-box`);
   const fillBg = meshGradients.map(g => `${g} padding-box`);
   const angleDeg = `${cursorAngle.toFixed(3)}deg`;
+  // Calculate active glow opacity based on cursor proximity
+  const activeOpacity = isVisible
+    ? Math.max(0.45, (edgeProximity * 100 - colorSensitivity) / (100 - colorSensitivity))
+    : 0;
+
+  // Use active proximity-based opacity on hover
+  const borderOpacity = activeOpacity;
+
+  // Conic tracking mask for active hover spotlight
+  const borderMask = `conic-gradient(from ${angleDeg} at center, black ${coneSpread}%, transparent ${coneSpread + 15}%, transparent ${100 - coneSpread - 15}%, black ${100 - coneSpread}%)`;
+
+  // Only apply edge mesh fill opacity on hover to keep the card clean when idle
+  const fillOpacityVal = isVisible ? activeOpacity * fillOpacity : 0;
 
   return (
     <div
@@ -125,14 +135,29 @@ const BorderGlow = ({
       onPointerMove={handlePointerMove}
       onPointerEnter={() => setIsHovered(true)}
       onPointerLeave={() => setIsHovered(false)}
-      className={`relative grid isolate border border-white/15 ${className}`}
+      className={`relative grid isolate ${className}`}
       style={{
         background: backgroundColor,
         borderRadius: `${borderRadius}px`,
         transform: 'translate3d(0, 0, 0.01px)',
       }}
     >
-      {/* mesh gradient border */}
+      {/* Base border (Always visible all around, no mask, uniform low opacity) */}
+      <div
+        className="absolute inset-0 rounded-[inherit] -z-[1]"
+        style={{
+          border: '1px solid transparent',
+          background: [
+            `linear-gradient(${backgroundColor} 0 100%) padding-box`,
+            'linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box',
+            ...borderBg,
+          ].join(', '),
+          opacity: 0.15,
+          transition: 'opacity 0.3s ease',
+        }}
+      />
+
+      {/* Active hover spotlight glow (Tracks cursor, masked, bright) */}
       <div
         className="absolute inset-0 rounded-[inherit] -z-[1]"
         style={{
@@ -143,9 +168,9 @@ const BorderGlow = ({
             ...borderBg,
           ].join(', '),
           opacity: borderOpacity,
-          maskImage: `conic-gradient(from ${angleDeg} at center, black ${coneSpread}%, transparent ${coneSpread + 15}%, transparent ${100 - coneSpread - 15}%, black ${100 - coneSpread}%)`,
-          WebkitMaskImage: `conic-gradient(from ${angleDeg} at center, black ${coneSpread}%, transparent ${coneSpread + 15}%, transparent ${100 - coneSpread - 15}%, black ${100 - coneSpread}%)`,
-          transition: isVisible ? 'opacity 0.25s ease-out' : 'opacity 0.75s ease-in-out',
+          maskImage: borderMask,
+          WebkitMaskImage: borderMask,
+          transition: isVisible ? 'opacity 0.2s ease-out' : 'opacity 0.5s ease-in-out',
         }}
       />
 
@@ -175,9 +200,9 @@ const BorderGlow = ({
           ].join(', '),
           maskComposite: 'subtract, add, add, add, add, add',
           WebkitMaskComposite: 'source-out, source-over, source-over, source-over, source-over, source-over',
-          opacity: borderOpacity * fillOpacity,
+          opacity: fillOpacityVal,
           mixBlendMode: 'soft-light',
-          transition: isVisible ? 'opacity 0.25s ease-out' : 'opacity 0.75s ease-in-out',
+          transition: isVisible ? 'opacity 0.25s ease-out' : 'opacity 0.6s ease-in-out',
         }}
       />
 

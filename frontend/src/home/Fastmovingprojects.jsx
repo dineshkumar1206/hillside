@@ -57,7 +57,7 @@ function PropertyCard({ project }) {
         coneSpread={30}
         animated={false}
         colors={['#10b981', '#34d399', '#059669']} 
-        className="w-full border border-gray-200 shadow-sm overflow-hidden"
+        className="w-full shadow-sm overflow-hidden"
       >
         <div 
           onClick={() => {
@@ -222,7 +222,7 @@ export default function FastMovingProjects() {
         hidden: {},
         visible: { transition: { staggerChildren: 0.25 } },
       }}
-      className="w-full bg-white py-10 md:py-14"
+      className="w-full bg-[#f2faf5] py-10 md:py-14"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 flex flex-col gap-4">
 

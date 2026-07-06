@@ -34,7 +34,7 @@ export default function Hero() {
       // Changed padding-top to 'pt-[130px]' to push the content down below the floating navbar
       className="relative w-full min-h-screen bg-[url('/images/hill-bg.jpg')] bg-cover bg-center flex items-center pt-[130px] pb-10 md:pb-14 lg:pb-20"
       style={{
-        backgroundImage: `url('/hillside/hillsite-logo2.png')` // Make sure your background image points here
+        backgroundImage: `url('/hillside/hillsite-logo1.jpeg')` // Make sure your background image points here
       }}
     >
       {/* Subtle overlay to guarantee clean text contrast across varying viewport sizes */}
@@ -51,7 +51,7 @@ export default function Hero() {
         >
           
           {/* Core Brand & Typography Stack */}
-          <div className="space-y-3">
+          {/* <div className="space-y-3">
             <motion.h2 
               initial={{ opacity: 0, y: 15 }}
               animate={isPreloaderFinished ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
@@ -68,10 +68,10 @@ export default function Hero() {
             >
               Invest in Nature. Live Beyond Walls.
             </motion.h1>
-          </div>
+          </div> */}
 
           {/* Frosted Glass Information Card Block with separate fade-in */}
-          <motion.div 
+          {/* <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={isPreloaderFinished ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.5, duration: 0.6 }}
@@ -83,7 +83,7 @@ export default function Hero() {
             <p className="text-sm md:text-base font-normal leading-relaxed text-gray-100">
               Perfect for luxury homes, retreats, or eco-conscious investments, each plot is selected for its landscape value and long-term potential. Our team ensures clear documentation, discreet site visits, and personalized service for refined buyers seeking more than just land — a legacy.
             </p>
-          </motion.div>
+          </motion.div> */}
           
         </motion.div>
 

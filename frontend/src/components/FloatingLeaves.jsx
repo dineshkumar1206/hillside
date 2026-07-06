@@ -1,74 +1,89 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
-// Refined hand-drawn SVGs with delicate inner details and translucent fills
+// Refined realistic leaf SVGs with inner veins and gradient fills
 const LEAF_TYPES = [
-  // Leaf Type 1: Classic slender leaf
-  (size) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2C12 2 4 9 4 15a8 8 0 0 0 16 0c0-6-8-13-8-13z" fill="currentColor" fillOpacity="0.08" />
-      <path d="M12 10v10" opacity="0.6" />
-      <path d="M12 12c1.5 1 2.5 1 3.5 0M12 14c-1.5 1-2.5 1-3.5 0" opacity="0.4" />
+  // Leaf Type 1: Classic slender leaf (Willow/Eucalyptus style)
+  (size, gradId, strokeColor) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={strokeColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2C12 2 5 8 5 14a7 7 0 0 0 14 0c0-6-7-12-7-12z" fill={`url(#${gradId})`} />
+      {/* Main central vein */}
+      <path d="M12 5.5v12.5" stroke={strokeColor} opacity="0.6" strokeWidth="1" />
+      {/* Delicate lateral veins */}
+      <path d="M12 8.5c1.2 0.6 2.4 0.4 3.5-0.4" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
+      <path d="M12 11c-1.2 0.6-2.4 0.4-3.5-0.4" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
+      <path d="M12 13c1.5 0.8 2.8 0.5 4-0.3" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
+      <path d="M12 15.5c-1.5 0.8-2.8 0.5-4-0.3" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
     </svg>
   ),
-  // Leaf Type 2: Broad lobed oak-style leaf
-  (size) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2C12 2 9 5 9 8c0 1.5 1 2 0 3.5C8 13 6 12 6 14.5c0 2 2 4 6 5.5c4-1.5 6-3.5 6-5.5c0-2.5-2-1.5-3-3.5c-1-1.5 0-2 0-3.5c0-3-3-6-3-6z" fill="currentColor" fillOpacity="0.08" />
-      <path d="M12 8v11" opacity="0.6" />
+  // Leaf Type 2: Broad lobed leaf (Oak/Maple style)
+  (size, gradId, strokeColor) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={strokeColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2c0 0-2.5 2.5-2 5c-1.5-0.5-3 1-2.5 3c-1.5 0-2 2-1 3.5c1 1.5 3 1.5 5.5 2.5c0.5 2.5 1.5 3 2.5 3.5c1-0.5 2-1 2.5-3.5c2.5-1 4.5-1 5.5-2.5c1-1.5 0.5-3.5-1-3.5c0.5-2-1-3.5-2.5-3c0.5-2.5-2-5-2-5z" fill={`url(#${gradId})`} />
+      {/* Main central vein */}
+      <path d="M12 4.5v13.5" stroke={strokeColor} opacity="0.6" strokeWidth="1" />
+      {/* Delicate lateral veins */}
+      <path d="M12 7.5c1.5 0.8 2.5 0.2 3.5-0.5" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
+      <path d="M12 9.5c-1.5 0.8-2.5 0.2-3.5-0.5" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
+      <path d="M12 12c1.8 1 2.8 0.4 3.8-0.4" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
+      <path d="M12 14c-1.8 1-2.8 0.4-3.8-0.4" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
     </svg>
   ),
-  // Leaf Type 3: Willow slender leaf
-  (size) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2C12 2 7 8 7 14c0 3 2.5 5.5 5 5.5s5-2.5 5-5.5c0-6-5-12-5-12z" fill="currentColor" fillOpacity="0.08" />
-      <path d="M12 19v3" opacity="0.6" />
-      <path d="M12 6c-2 2-3 5-3 8" opacity="0.5" />
+  // Leaf Type 3: Heart-shaped leaf (Birch/Linden style)
+  (size, gradId, strokeColor) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={strokeColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3c-4.5 3.5-6.5 8-3.5 13c2.2 3.5 5.5 3.5 7 0c3-5 1-9.5-3.5-13z" fill={`url(#${gradId})`} />
+      {/* Main central vein */}
+      <path d="M12 5v12.5" stroke={strokeColor} opacity="0.6" strokeWidth="1" />
+      {/* Delicate lateral veins */}
+      <path d="M12 8c1.5 0.7 2.8 0.3 3.8-0.5" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
+      <path d="M12 10.5c-1.5 0.7-2.8 0.3-3.8-0.5" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
+      <path d="M12 13c1.5 0.7 2.8 0.3 3.8-0.5" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
+      <path d="M12 15c-1.5 0.7-2.8 0.3-3.8-0.5" stroke={strokeColor} opacity="0.4" strokeWidth="0.8" />
     </svg>
   )
 ];
 
-const LEAF_COLORS = [
+const LEAF_STROKES = [
+  '#0d5a36', // dark forest green
+  '#065f46', // emerald-800
   '#15803d', // green-700
-  '#16a34a', // green-600
-  '#22c55e', // green-500
-  '#14b8a6', // teal-500
-  '#84cc16', // lime-500
-  '#4ade80'  // green-400
+  '#0f766e'  // teal-700
 ];
 
 export default function FloatingLeaves() {
   const leafData = useMemo(() => {
-    return Array.from({ length: 38 }).map((_, idx) => {
-      const size = Math.floor(Math.random() * 28) + 14; // 14px to 42px
+    // Reduced from 38 to 15 for a cleaner, more premium and realistic look
+    return Array.from({ length: 15 }).map((_, idx) => {
+      const size = Math.floor(Math.random() * 20) + 18; // 18px to 38px (more uniform size)
       const left = Math.random() * 100;
-      const delay = Math.random() * -20; // Negative delay ensures leaves are already falling on mount
-      const duration = Math.random() * 15 + 18; // 18s to 33s
+      const delay = Math.random() * -25; // Negative delay so leaves are fully distributed on load
+      const duration = Math.random() * 10 + 20; // 20s to 30s fall duration (slower and more realistic)
       
       const rotateStart = Math.floor(Math.random() * 360);
-      const rotateEnd = rotateStart + (Math.random() > 0.5 ? 270 : -270);
+      const rotateEnd = rotateStart + (Math.random() > 0.5 ? 360 : -360); // Realistic full rotations
       
       const leafIndex = idx % LEAF_TYPES.length;
-      const color = LEAF_COLORS[idx % LEAF_COLORS.length];
-      const swayWidth = Math.floor(Math.random() * 40) + 30; // 30px to 70px lateral movement
-      const swayDuration = Math.random() * 4 + 4; // 4s to 8s independent looping sway duration
-
-      // Deep, rich depth-of-field configurations
+      const strokeColor = LEAF_STROKES[idx % LEAF_STROKES.length];
+      const swayWidth = Math.floor(Math.random() * 45) + 35; // 35px to 80px sway
+      const swayDuration = Math.random() * 4 + 6; // 6s to 10s sway duration (gentle wind effect)
+      
+      // Depth of field config to support visual depth and realism
       let filter = '';
-      let opacityMax = 0.6;
+      let opacityMax = 0.65;
       let zIndex = 10;
       
-      if (size > 32) {
-        filter = 'blur(1.2px) drop-shadow(4px 12px 8px rgba(0,0,0,0.06))'; // Foreground close to camera
-        opacityMax = 0.8;
+      if (size > 30) {
+        filter = 'blur(0.8px) drop-shadow(4px 10px 6px rgba(0,0,0,0.04))'; // Near camera
+        opacityMax = 0.75;
         zIndex = 20;
-      } else if (size < 20) {
-        filter = 'blur(0.6px) drop-shadow(1px 2px 2px rgba(0,0,0,0.03))'; // Deep background
+      } else if (size < 23) {
+        filter = 'blur(1.5px) drop-shadow(1px 2px 2px rgba(0,0,0,0.02))'; // Far background
         opacityMax = 0.35;
         zIndex = 5;
       } else {
-        filter = 'drop-shadow(2px 6px 4px rgba(0,0,0,0.05))'; // Sharp mid-ground
-        opacityMax = 0.65;
+        filter = 'drop-shadow(2px 6px 4px rgba(0,0,0,0.03))'; // Midground
+        opacityMax = 0.6;
         zIndex = 15;
       }
 
@@ -81,7 +96,8 @@ export default function FloatingLeaves() {
         rotateStart,
         rotateEnd,
         leafIndex,
-        color,
+        gradId: `leaf-grad-${idx % 4}`,
+        strokeColor,
         swayWidth,
         swayDuration,
         filter,
@@ -93,6 +109,32 @@ export default function FloatingLeaves() {
 
   return (
     <div className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none select-none z-[15]">
+      {/* SVG definitions for beautiful semi-transparent green gradients */}
+      <svg className="absolute w-0 h-0 pointer-events-none" aria-hidden="true">
+        <defs>
+          {/* Gradient 1: Soft Forest Green */}
+          <linearGradient id="leaf-grad-0" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#15803d" stopOpacity="0.75" />
+            <stop offset="100%" stopColor="#86efac" stopOpacity="0.25" />
+          </linearGradient>
+          {/* Gradient 2: Emerald Green */}
+          <linearGradient id="leaf-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#047857" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#a7f3d0" stopOpacity="0.3" />
+          </linearGradient>
+          {/* Gradient 3: Sage/Lime Green */}
+          <linearGradient id="leaf-grad-2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#65a30d" stopOpacity="0.7" />
+            <stop offset="100%" stopColor="#d9f99d" stopOpacity="0.2" />
+          </linearGradient>
+          {/* Gradient 4: Mint/Teal Green */}
+          <linearGradient id="leaf-grad-3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#0d9488" stopOpacity="0.75" />
+            <stop offset="100%" stopColor="#99f6e4" stopOpacity="0.25" />
+          </linearGradient>
+        </defs>
+      </svg>
+
       {leafData.map((leaf) => {
         const renderLeafSvg = LEAF_TYPES[leaf.leafIndex];
 
@@ -105,7 +147,6 @@ export default function FloatingLeaves() {
               left: `${leaf.left}%`,
               width: leaf.size,
               height: leaf.size,
-              color: leaf.color,
               filter: leaf.filter,
               zIndex: leaf.zIndex,
             }}
@@ -167,7 +208,7 @@ export default function FloatingLeaves() {
               }
             }}
           >
-            {renderLeafSvg(leaf.size)}
+            {renderLeafSvg(leaf.size, leaf.gradId, leaf.strokeColor)}
           </motion.div>
         );
       })}

@@ -44,7 +44,7 @@ export default function Navbar() {
       - Changed to 'sticky top-0 left-0' so it stays locked at the top of the viewport.
       - Fixed background to solid white ('bg-white') with a clean bottom shadow ('shadow-sm').
     */
-    <nav className="w-full bg-gray-50 sticky top-0 left-0 z-50 px-6 py-3 md:px-16 shadow-sm transition-all duration-300">
+    <nav className="w-full bg-gray-50 sticky top-0 left-0 z-50 px-5 py-3 md:px-16 shadow-sm transition-all duration-300">
       {/* Boxed Inner Container matching your Hero width */}
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
         
@@ -53,7 +53,7 @@ export default function Navbar() {
           <img 
             src="/hillside/Hillsite-Favicon.webp" 
             alt="Real Estate Logo" 
-            className="w-25 h-25 object-contain" 
+            className="w-23 h-20 object-contain" 
           />
         </a>
 
@@ -128,4 +128,4 @@ export default function Navbar() {
       </div>
     </nav>
   );
-}
+}

@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8008;
 
 // Enable CORS for local Vite development server
 app.use(cors({
@@ -26,16 +26,16 @@ app.use(cors({
 app.use(express.json());
 
 // Serve local uploaded assets
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/hillsite/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Simple health check route
-app.get('/health', (req, res) => {
+app.get('/hillsite/health', (req, res) => {
   res.json({ status: 'OK', message: 'Hillside Lead Portal Backend API is running.' });
 });
 
 // Register api router paths
-app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
+app.use('/hillsite/api/auth', authRoutes);
+app.use('/hillsite/api/projects', projectRoutes);
 
 
 // Catch-all server error handler
@@ -55,8 +55,6 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`[HILLSIDE SERVER] Running at http://localhost:${PORT}`);
-      console.log(`[HILLSIDE SERVER] Admin Login: ${process.env.ADMIN_EMAIL || 'admin@hillside.com'}`);
-      console.log(`[HILLSIDE SERVER] Admin Password: [SECURELY STORED IN ENVIRONMENT]`);
     });
 
   } catch (error) {

@@ -10,10 +10,18 @@ const isProduction = process.env.NODE_ENV === 'production' ||
 
 const dbPort = isProduction ? 3306 : parseInt(DB_PORT || '3307', 10);
 
+let resolvedDbName = DB_NAME || 'hillsite-backend';
+const dbUser = DB_USER || 'root';
+
+// Auto-prepend amigoweb_ prefix to database name if it was omitted in environment variables
+if (dbUser.startsWith('amigoweb_') && !resolvedDbName.startsWith('amigoweb_')) {
+  resolvedDbName = `amigoweb_${resolvedDbName}`;
+}
+
 // Initialize Sequelize instance
 export const sequelize = new Sequelize(
-  DB_NAME || 'hillsite-backend',
-  DB_USER || 'root',
+  resolvedDbName,
+  dbUser,
   DB_PASSWORD || '',
   {
     host: DB_HOST || '127.0.0.1',
@@ -31,7 +39,7 @@ export const sequelize = new Sequelize(
 export const initDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log(`[SEQUELIZE] Connected successfully to database "${DB_NAME}" on port ${dbPort}.`);
+    console.log(`[SEQUELIZE] Connected successfully to database "${resolvedDbName}" on port ${dbPort}.`);
   } catch (error) {
     console.error('[SEQUELIZE] Database connection failed. Verify MySQL service details.');
     console.error('Error details:', error.message);

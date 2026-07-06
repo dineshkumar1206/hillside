@@ -4,9 +4,9 @@ import {
   getProjectById,
   createProject,
   updateProject,
-  deleteProject,
-  upload
+  deleteProject
 } from '../controllers/projectController.js';
+import { upload } from '../config/cloudinary.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();

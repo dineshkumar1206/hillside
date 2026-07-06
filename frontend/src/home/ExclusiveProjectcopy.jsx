@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import API_URL from '../app';
 
 // ─── Default Fallback Project Data ───────────────────────────────────────────
 const DEFAULT_PROJECTS = [
@@ -119,7 +120,7 @@ export default function ExclusiveProjects() {
   useEffect(() => {
     const fetchProjectsList = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/projects');
+        const res = await fetch(`${API_URL}/api/projects`);
         if (res.ok) {
           const data = await res.json();
           const filtered = data

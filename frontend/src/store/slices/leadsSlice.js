@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import API_URL from '../../app';
 
 const initialState = {
   list: [],
@@ -73,7 +74,7 @@ export const {
 export const fetchLeadsAsync = (token) => async (dispatch) => {
   dispatch(fetchLeadsStart());
   try {
-    const response = await fetch('http://localhost:5000/api/leads', {
+    const response = await fetch(`${API_URL}/api/leads`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -93,7 +94,7 @@ export const fetchLeadsAsync = (token) => async (dispatch) => {
 
 export const updateLeadStatusAsync = (id, status, token) => async (dispatch) => {
   try {
-    const response = await fetch(`http://localhost:5000/api/leads/${id}/status`, {
+    const response = await fetch(`${API_URL}/api/leads/${id}/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ export const updateLeadStatusAsync = (id, status, token) => async (dispatch) => 
 
 export const deleteLeadAsync = (id, token) => async (dispatch) => {
   try {
-    const response = await fetch(`http://localhost:5000/api/leads/${id}`, {
+    const response = await fetch(`${API_URL}/api/leads/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`

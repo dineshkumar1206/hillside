@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CheckCircle2, MessageCircle } from "lucide-react";
+import API_URL from '../app';
 
 /**
  * ContactForm
@@ -26,7 +27,7 @@ export default function ContactForm({ city = "Dombivali", subtitle = "Lodha Grou
     setErrorMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/leads/contact", {
+      const response = await fetch(`${API_URL}/api/leads/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

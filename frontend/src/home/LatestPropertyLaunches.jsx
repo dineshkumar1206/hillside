@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import BorderGlow from '../components/BorderGlow';
+import API_URL from '../app';
 
 // ─── Seeded Fallback Property Data (Updated for Yelagiri) ────────────────────
 const DEFAULT_PROJECTS = [
@@ -190,7 +191,7 @@ export default function LatestPropertyLaunches() {
   useEffect(() => {
     const fetchProjectsList = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/projects');
+        const res = await fetch(`${API_URL}/api/projects`);
         if (res.ok) {
           const data = await res.json();
           const filtered = data

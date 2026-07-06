@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { logout } from '../store/slices/authSlice.js';
+import API_URL from '../app';
 
 const POPULAR_ICONS = [
   'Mountain', 'FileCheck', 'TrendingUp', 'Home', 'Shield', 
@@ -57,7 +58,7 @@ export default function Dashboard() {
     setProjectLoading(true);
     setProjectError(null);
     try {
-      const res = await fetch('http://localhost:5000/api/projects');
+      const res = await fetch(`${API_URL}/api/projects`);
       if (res.ok) {
         const data = await res.json();
         setProjects(data);
@@ -80,8 +81,8 @@ export default function Dashboard() {
 
     const isEdit = !!editingProject.id;
     const url = isEdit
-      ? `http://localhost:5000/api/projects/${editingProject.id}`
-      : 'http://localhost:5000/api/projects';
+      ? `${API_URL}/api/projects/${editingProject.id}`
+      : `${API_URL}/api/projects`;
     const method = isEdit ? 'PUT' : 'POST';
 
     const formData = new FormData();
@@ -136,7 +137,7 @@ export default function Dashboard() {
   const handleDeleteProject = async () => {
     if (!projectDeleteConfirm) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/projects/${projectDeleteConfirm.id}`, {
+      const response = await fetch(`${API_URL}/api/projects/${projectDeleteConfirm.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

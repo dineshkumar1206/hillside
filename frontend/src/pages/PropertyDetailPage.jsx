@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
+import API_URL from '../app';
 import {
   ChevronLeft,
   ChevronRight,
@@ -315,7 +316,7 @@ export default function PropertyDetailPage() {
     const getProjectDetail = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:5000/api/projects");
+        const res = await fetch(`${API_URL}/api/projects`);
         if (res.ok) {
           const data = await res.json();
           // Find project where routeSubpath matches the current pathname

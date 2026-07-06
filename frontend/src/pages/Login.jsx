@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Lock, Mail, ArrowRight, AlertCircle, Eye, EyeOff, Home } from 'lucide-react';
 import { loginStart, loginSuccess, loginFailure, clearError } from '../store/slices/authSlice.js';
+import API_URL from '../app';
 
 export default function Login() {
   const [emailInput, setEmailInput] = useState('');
@@ -41,7 +42,7 @@ export default function Login() {
     dispatch(loginStart());
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

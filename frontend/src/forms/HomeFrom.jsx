@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_URL from '../app';
 
 const HomeForm = () => {
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ const HomeForm = () => {
     setErrorMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/leads/home", {
+      const response = await fetch(`${API_URL}/api/leads/home`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

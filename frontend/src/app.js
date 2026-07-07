@@ -3,6 +3,10 @@ const isLocal = typeof window !== "undefined" &&
 
 // Determine the live URL dynamically or use the amigowebster.in fallback
 const getLiveURL = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+
   if (typeof window !== "undefined") {
     // If we're on a custom live domain, use the current origin with the path
     if (window.location.hostname.includes("amigowebster.in")) {

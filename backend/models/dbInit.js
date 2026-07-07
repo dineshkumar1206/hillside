@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { sequelize } from '../config/db.js';
 import User from './User.js';
 import Project from './Project.js';
+import Lead from './Lead.js';
 
 export const seedDatabase = async () => {
   try {

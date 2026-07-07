@@ -8,6 +8,7 @@ import { initDB } from './config/db.js';
 import { seedDatabase } from './models/dbInit.js';
 import authRoutes from './routes/authRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
+import leadRoutes from './routes/leadRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,9 +21,11 @@ const PORT = process.env.PORT || 8008;
 // Track database initialization error
 let dbError = null;
 
-// Enable CORS for local Vite development server
+// Enable CORS dynamically for local and live domains
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: (origin, callback) => {
+    callback(null, true);
+  },
   credentials: true
 }));
 
@@ -42,17 +45,29 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve local uploaded assets
+// Serve local uploaded assets (supporting local, live, and aliased paths)
 app.use('/hillsite/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/hillsite-api/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Simple health check route
-app.get('/hillsite/health', (req, res) => {
+// Simple health check route (supporting multiple paths)
+const healthCheckHandler = (req, res) => {
   res.json({ status: 'OK', message: 'Hillside Lead Portal Backend API is running.' });
-});
+};
+app.get('/health', healthCheckHandler);
+app.get('/hillsite/health', healthCheckHandler);
+app.get('/hillsite-api/health', healthCheckHandler);
 
-// Register api router paths
-app.use('/hillsite/api/auth', authRoutes);
-app.use('/hillsite/api/projects', projectRoutes);
+// Register api router paths for multiple namespaces to support local and live environments simultaneously
+const registerRoutes = (pathPrefix) => {
+  app.use(`${pathPrefix}/api/auth`, authRoutes);
+  app.use(`${pathPrefix}/api/projects`, projectRoutes);
+  app.use(`${pathPrefix}/api/leads`, leadRoutes);
+};
+
+registerRoutes('');
+registerRoutes('/hillsite');
+registerRoutes('/hillsite-api');
 
 
 // Catch-all server error handler
